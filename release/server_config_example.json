@@ -1,0 +1,22 @@
+{
+  "SSO Server": {
+    "path": "C:\\laragon\\www\\sso-server",
+    "port": 8000,
+    "command": "php artisan serve --port=8000"
+  },
+  "SSO Master": {
+    "path": "C:\\laragon\\www\\sso-master",
+    "port": 8001,
+    "command": "php artisan serve --port=8001"
+  },
+  "Etiket API": {
+    "path": "Z:\\Dev\\etiket\\backend",
+    "port": 8009,
+    "command": "php artisan serve --port=8009"
+  },
+  "Custom Server": {
+    "path": "C:\\path\\to\\your\\server",
+    "port": 8002,
+    "command": "php artisan serve --port=8002"
+  }
+}

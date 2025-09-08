@@ -1,0 +1,177 @@
+name: Build and Release DevServer Manager
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Trigger on version tags like v1.0.0
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+        
+    - name: Create assets directory if not exists
+      run: |
+        if (!(Test-Path "assets")) { New-Item -ItemType Directory -Path "assets" }
+        
+    - name: Generate app icon if missing
+      run: |
+        if (!(Test-Path "assets\app_icon.ico")) {
+          python -c "
+        from PIL import Image, ImageDraw
+        import os
+        
+        # Create a simple icon if missing
+        img = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+        
+        # Draw server icon elements
+        draw.ellipse([8, 8, 56, 56], fill='#2E86AB', outline='#A23B72', width=2)
+        draw.rectangle([20, 24, 44, 28], fill='#F18F01')
+        draw.rectangle([20, 32, 44, 36], fill='#C73E1D')
+        draw.ellipse([48, 12, 52, 16], fill='#00FF00')
+        
+        os.makedirs('assets', exist_ok=True)
+        img.save('assets/app_icon.ico', format='ICO')
+        print('Generated app_icon.ico')
+          "
+        }
+        
+    - name: Build executable
+      run: |
+        python build_executable.py
+        
+    - name: Verify build output
+      run: |
+        if (Test-Path "dist\DevServerManager.exe") {
+          Write-Host "✅ Executable built successfully"
+          $size = (Get-Item "dist\DevServerManager.exe").Length / 1MB
+          Write-Host "📦 Executable size: $([math]::Round($size, 2)) MB"
+        } else {
+          Write-Host "❌ Build failed - executable not found"
+          exit 1
+        }
+        
+    - name: Test executable (quick smoke test)
+      run: |
+        # Quick test to ensure executable starts without crashing
+        $process = Start-Process -FilePath "dist\DevServerManager.exe" -PassThru -WindowStyle Hidden
+        Start-Sleep -Seconds 5
+        if (!$process.HasExited) {
+          Write-Host "✅ Executable starts successfully"
+          Stop-Process -Id $process.Id -Force
+        } else {
+          Write-Host "❌ Executable crashed on startup"
+          exit 1
+        }
+        
+    - name: Create release archive
+      run: |
+        # Create ZIP archive for release
+        Compress-Archive -Path "release\*" -DestinationPath "DevServerManager-${{ github.ref_name }}-Windows.zip"
+        
+        # Verify archive contents
+        Write-Host "📦 Release archive contents:"
+        Expand-Archive -Path "DevServerManager-${{ github.ref_name }}-Windows.zip" -DestinationPath "temp_extract" -Force
+        Get-ChildItem "temp_extract" -Recurse | ForEach-Object { Write-Host "  $($_.FullName)" }
+        Remove-Item "temp_extract" -Recurse -Force
+        
+    - name: Generate release notes
+      id: release_notes
+      run: |
+        $releaseNotes = @"
+        # DevServer Manager ${{ github.ref_name }}
+        
+        ## 🚀 What's New
+        - Professional application icon
+        - Improved system tray integration
+        - Enhanced GUI components
+        - Better error handling
+        
+        ## 📦 Installation
+        1. Download `DevServerManager-${{ github.ref_name }}-Windows.zip`
+        2. Extract the archive
+        3. Run `DevServerManager.exe`
+        
+        ## 💻 System Requirements
+        - Windows 10/11 (64-bit)
+        - 4GB RAM minimum
+        - 100MB free disk space
+        
+        ## 🐛 Known Issues
+        - Windows Defender may show a warning (click "Run anyway")
+        - First startup may take a few seconds
+        
+        ## 📝 Files Included
+        - `DevServerManager.exe` - Main application
+        - `README.md` - Documentation
+        - `PANDUAN_PENGGUNAAN.txt` - User guide (Indonesian)
+        - `server_templates.json` - Server templates
+        - `server_config_example.json` - Configuration example
+        
+        Built with ❤️ using Python and PyInstaller
+        "@
+        
+        # Save to file for upload
+        $releaseNotes | Out-File -FilePath "release_notes.md" -Encoding UTF8
+        
+        # Set output for GitHub Actions
+        echo "RELEASE_NOTES<<EOF" >> $env:GITHUB_OUTPUT
+        echo $releaseNotes >> $env:GITHUB_OUTPUT
+        echo "EOF" >> $env:GITHUB_OUTPUT
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: DevServerManager-Windows
+        path: |
+          DevServerManager-${{ github.ref_name }}-Windows.zip
+          dist/DevServerManager.exe
+          release_notes.md
+        retention-days: 30
+        
+    - name: Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          DevServerManager-${{ github.ref_name }}-Windows.zip
+          dist/DevServerManager.exe
+        body_path: release_notes.md
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+  # Optional: Build for other platforms in the future
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   # Similar steps for Linux build
+  
+  # build-macos:
+  #   runs-on: macos-latest
+  #   # Similar steps for macOS build

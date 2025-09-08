@@ -104,6 +104,33 @@ launch_gui.bat
 - Quick access untuk start/stop servers
 - Notifikasi status server
 
+## 📦 Distribusi Aplikasi
+
+### Untuk Pengguna Akhir
+Aplikasi ini dapat didistribusikan sebagai executable standalone tanpa perlu instalasi Python:
+
+1. **Build Executable**
+   ```bash
+   python build_executable.py
+   ```
+
+2. **File Output**
+   - `dist/DevServerManager.exe` - Executable utama
+   - `release/` - Package lengkap untuk distribusi
+
+3. **GitHub Releases**
+   - Upload file dari folder `release/` ke GitHub Releases
+   - User dapat download dan langsung menjalankan
+   - Tidak perlu akses ke source code
+
+### Keuntungan Distribusi Executable
+- ✅ User tidak perlu install Python
+- ✅ Tidak ada akses ke source code development
+- ✅ Professional distribution method
+- ✅ Easy installation untuk non-technical users
+
+Lihat [DISTRIBUTION_GUIDE.md](DISTRIBUTION_GUIDE.md) untuk panduan lengkap.
+
 ## 🔧 Konfigurasi
 
 ### 📁 Struktur File
@@ -229,6 +256,14 @@ Edit file `config/theme_config.json` untuk mengubah warna dan font:
 - 100MB disk space
 
 ### 📦 Installation
+
+#### Untuk Pengguna Akhir (Recommended)
+1. **Download Release**
+   - Kunjungi halaman [Releases](../../releases)
+   - Download file `DevServerManager-vX.X.X-Windows.zip`
+   - Extract dan jalankan `DevServerManager.exe`
+
+#### Untuk Developer
 ```bash
 # Clone repository
 git clone <repository-url>
@@ -239,6 +274,9 @@ pip install -r requirements.txt
 
 # Run application
 python main.py
+
+# Build executable (opsional)
+python build_executable.py
 ```
 
 ## 🔄 Migration Guide

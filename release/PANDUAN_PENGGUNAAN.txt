@@ -1,0 +1,19 @@
+
+# DevServer Manager - Panduan Penggunaan
+
+## Cara Menjalankan
+1. Double-click file `DevServerManager.exe`
+2. Aplikasi akan terbuka dengan splash screen
+3. Gunakan interface untuk mengelola server development Anda
+
+## File Konfigurasi
+- `server_templates.json`: Template server yang tersedia
+- `server_config_example.json`: Contoh konfigurasi server
+
+## Troubleshooting
+- Jika aplikasi tidak berjalan, pastikan Windows Defender tidak memblokir file
+- Untuk masalah lain, silakan buat issue di repository GitHub
+
+## Sistem Requirements
+- Windows 10/11
+- .NET Framework (biasanya sudah terinstall)
