@@ -1,3 +1,19 @@
+## [1.0.0] - 2025-09-08
+
+### Added
+- New features and improvements
+
+### Changed
+- Updated dependencies and configurations
+
+### Fixed
+- Bug fixes and stability improvements
+
+### Security
+- Security updates and patches
+
+---
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

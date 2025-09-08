@@ -1,5 +1,4 @@
-
-# DevServer Manager - Panduan Penggunaan
+# DevServer Manager v1.0.0 - Panduan Penggunaan
 
 ## Cara Menjalankan
 1. Double-click file `DevServerManager.exe`
@@ -17,3 +16,6 @@
 ## Sistem Requirements
 - Windows 10/11
 - .NET Framework (biasanya sudah terinstall)
+
+## Versi 1.0.0
+Lihat CHANGELOG.md untuk detail perubahan versi ini.
