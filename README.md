@@ -346,6 +346,12 @@ MIT License - bebas digunakan dan dimodifikasi.
 
 ## 🙏 Acknowledgments
 
+### 👨‍💻 Developer
+**DevServer Manager** dikembangkan oleh **idpcks**
+
+Sebuah aplikasi GUI untuk mengelola multiple development servers dengan fitur modern dan user-friendly interface.
+
+### 🤝 Credits
 - Terima kasih kepada semua contributors
 - Inspired by modern development workflows
 - Built with ❤️ untuk developer community

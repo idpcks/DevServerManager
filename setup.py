@@ -32,14 +32,14 @@ except Exception:
     ]
 
 setup(
-    name="devserver-manager",
+    name="DevServerManager",
     version="1.0.0",
-    author="Developer",
-    author_email="developer@example.com",
+    author="idpcks",
+    author_email="idpcks.container103@slmail.me",
     description="A GUI application for managing development servers",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/server-manager",
+    url="https://github.com/idpcks/DevServerManager",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -95,8 +95,8 @@ setup(
     zip_safe=False,
     keywords="server management gui development tools",
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/server-manager/issues",
-        "Source": "https://github.com/yourusername/server-manager",
-        "Documentation": "https://github.com/yourusername/server-manager/wiki",
+        "Bug Reports": "https://github.com/idpcks/DevServerManager/issues",
+        "Source": "https://github.com/idpcks/DevServerManager",
+        "Documentation": "https://github.com/idpcks/DevServerManager/wiki",
     },
 )
