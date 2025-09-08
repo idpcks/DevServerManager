@@ -15,6 +15,14 @@ class SplashScreen:
         self.splash = tk.Tk()
         self.splash.title("DevServer Manager")
         
+        # Set application icon
+        try:
+            icon_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'app_icon.ico')
+            if os.path.exists(icon_path):
+                self.splash.iconbitmap(icon_path)
+        except Exception:
+            pass  # Ignore icon errors in splash screen
+        
         # Get current theme colors
         self.colors = theme_manager.get_current_colors()
         

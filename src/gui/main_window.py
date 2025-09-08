@@ -110,6 +110,17 @@ class MainWindow:
         self.root.minsize(800, 600)
         self.root.configure(bg='#2c3e50')
         
+        # Set application icon
+        try:
+            icon_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'app_icon.ico')
+            if os.path.exists(icon_path):
+                self.root.iconbitmap(icon_path)
+                app_logger.info(f"Application icon set: {icon_path}")
+            else:
+                app_logger.warning(f"Icon file not found: {icon_path}")
+        except Exception as e:
+            app_logger.error(f"Error setting application icon: {e}")
+        
         # Center window on screen
         self._center_window()
         
@@ -625,11 +636,32 @@ class MainWindow:
             if not TRAY_AVAILABLE:
                 return
             
-            # Create tray icon image
-            image = Image.new('RGB', (64, 64), color='blue')
-            draw = ImageDraw.Draw(image)
-            draw.ellipse([16, 16, 48, 48], fill='white')
-            draw.text((24, 24), 'SM', fill='blue')
+            # Try to load custom icon, fallback to generated icon
+            try:
+                icon_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'app_icon.ico')
+                if os.path.exists(icon_path):
+                    image = Image.open(icon_path)
+                    # Resize to 64x64 if needed
+                    if image.size != (64, 64):
+                        image = image.resize((64, 64), Image.Resampling.LANCZOS)
+                else:
+                    raise FileNotFoundError("Icon file not found")
+            except Exception:
+                # Fallback to generated icon
+                image = Image.new('RGBA', (64, 64), (0, 0, 0, 0))
+                draw = ImageDraw.Draw(image)
+                # Create professional server icon
+                draw.ellipse([2, 2, 62, 62], fill=(52, 152, 219), outline=(44, 62, 80), width=2)
+                draw.rectangle([16, 18, 48, 46], fill=(236, 240, 241), outline=(52, 73, 94), width=1)
+                draw.rectangle([18, 21, 46, 25], fill=(39, 174, 96))
+                draw.rectangle([18, 27, 46, 31], fill=(243, 156, 18))
+                draw.rectangle([18, 33, 46, 37], fill=(231, 76, 60))
+                draw.rectangle([18, 39, 46, 43], fill=(155, 89, 182))
+                # Power indicators
+                draw.ellipse([40, 21, 44, 25], fill=(39, 174, 96))
+                draw.ellipse([40, 27, 44, 31], fill=(243, 156, 18))
+                draw.ellipse([40, 33, 44, 37], fill=(231, 76, 60))
+                draw.ellipse([40, 39, 44, 43], fill=(155, 89, 182))
             
             # Create tray menu
             menu = pystray.Menu(
