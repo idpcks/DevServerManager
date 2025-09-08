@@ -105,7 +105,7 @@ class MainWindow:
     
     def _setup_window(self) -> None:
         """Setup main window properties."""
-        self.root.title("DevServer Manager - Laravel Development")
+        self.root.title("DevServer Manager")
         self.root.geometry("1200x800")
         self.root.minsize(800, 600)
         self.root.configure(bg='#2c3e50')

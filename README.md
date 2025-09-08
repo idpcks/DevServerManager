@@ -2,6 +2,8 @@
 
 A modern, modular GUI application for managing multiple development servers with clean architecture and robust functionality. This application replaces traditional batch scripts with an intuitive interface and advanced features.
 
+![DevServer Manager Preview](preview/preview_app.png)
+
 ## ✨ Key Features
 
 ### 🏗️ Core Architecture
