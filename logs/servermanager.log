@@ -1200,3 +1200,29 @@ Ethernet adapter Bluetooth Network Connection:
 2025-09-08 11:14:21 - ServerManager - INFO - Application closing...
 2025-09-08 11:14:21 - ServerManager - INFO - Configuration saved
 2025-09-08 11:14:21 - ServerManager - INFO - Application exited normally
+2025-09-08 11:16:57 - ServerManager - INFO - ==================================================
+2025-09-08 11:16:57 - ServerManager - INFO - Server Manager Application Starting
+2025-09-08 11:16:57 - ServerManager - INFO - ==================================================
+2025-09-08 11:16:57 - ServerManager - INFO - Ensured directory exists: Z:\Dev\etiket\runserver\config
+2025-09-08 11:16:57 - ServerManager - INFO - Ensured directory exists: Z:\Dev\etiket\runserver\logs
+2025-09-08 11:16:57 - ServerManager - INFO - Ensured directory exists: Z:\Dev\etiket\runserver\assets
+2025-09-08 11:16:57 - ServerManager - INFO - Starting Server Manager Application
+2025-09-08 11:17:06 - ServerManager - INFO - Initializing application services...
+2025-09-08 11:17:06 - ServerManager - INFO - All services initialized successfully
+2025-09-08 11:17:06 - ServerManager - INFO - Creating GUI...
+2025-09-08 11:17:06 - ServerManager - INFO - App Event: Server Manager initialized successfully!
+2025-09-08 11:17:06 - ServerManager - INFO - System tray initialized
+2025-09-08 11:17:06 - ServerManager - INFO - GUI created successfully
+2025-09-08 11:17:06 - ServerManager - INFO - Starting GUI main loop
+2025-09-08 11:17:19 - ServerManager - INFO - App Event: Application minimized to system tray
+2025-09-08 11:20:20 - ServerManager - INFO - App Event: Failed to stop backend
+2025-09-08 11:20:20 - ServerManager - INFO - App Event: Failed to stop sso-server
+2025-09-08 11:20:20 - ServerManager - INFO - App Event: Failed to stop sso-master
+2025-09-08 11:20:25 - ServerManager - INFO - App Event: Window restored from system tray
+2025-09-08 11:20:29 - ServerManager - INFO - Application closing...
+2025-09-08 11:20:29 - ServerManager - INFO - Configuration saved
+2025-09-08 11:20:29 - ServerManager - INFO - Cleaning up application resources...
+2025-09-08 11:20:29 - ServerManager - INFO - Application cleanup completed
+2025-09-08 11:20:31 - ServerManager - INFO - Application closing...
+2025-09-08 11:20:31 - ServerManager - INFO - Configuration saved
+2025-09-08 11:20:31 - ServerManager - INFO - Application exited normally

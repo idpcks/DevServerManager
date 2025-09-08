@@ -1,4 +1,4 @@
-# Server Manager Application Requirements
+# DevServer Manager Application Requirements
 
 # Core dependencies for enhanced functionality
 psutil>=5.8.0          # Process management and system monitoring

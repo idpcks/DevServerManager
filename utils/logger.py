@@ -12,7 +12,7 @@ from typing import Optional
 class AppLogger:
     """Application logger with file and console output."""
     
-    def __init__(self, name: str = "ServerManager", log_dir: str = "logs"):
+    def __init__(self, name: str = "DevServerManager", log_dir: str = "logs"):
         """Initialize application logger.
         
         Args:

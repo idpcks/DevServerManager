@@ -1,4 +1,4 @@
-"""Dialog components for Server Manager Application
+"""Dialog components for DevServer Manager Application
 
 This module contains dialog classes for various user interactions.
 """

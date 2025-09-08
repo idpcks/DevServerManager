@@ -32,11 +32,11 @@ except Exception:
     ]
 
 setup(
-    name="server-manager",
+    name="devserver-manager",
     version="1.0.0",
     author="Developer",
     author_email="developer@example.com",
-    description="A GUI application for managing multiple development servers",
+    description="A GUI application for managing development servers",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yourusername/server-manager",
@@ -72,7 +72,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "server-manager=main:main",
+            "devserver-manager=main:main",
         ],
         "gui_scripts": [
             "server-manager-gui=main:main",

@@ -1,6 +1,6 @@
 """Main Window Component
 
-This module contains the main window class for the Server Manager GUI.
+This module contains the main window class for the DevServer Manager GUI.
 """
 
 import tkinter as tk
@@ -27,7 +27,7 @@ from utils.logger import app_logger
 
 
 class MainWindow:
-    """Main window for the Server Manager application."""
+    """Main window for the DevServer Manager application."""
     
     def __init__(self, root: tk.Tk):
         """Initialize main window.
@@ -105,7 +105,7 @@ class MainWindow:
     
     def _setup_window(self) -> None:
         """Setup main window properties."""
-        self.root.title("Server Manager - Laravel Development")
+        self.root.title("DevServer Manager - Laravel Development")
         self.root.geometry("1200x800")
         self.root.minsize(800, 600)
         self.root.configure(bg='#2c3e50')
@@ -197,7 +197,7 @@ class MainWindow:
         self.title_container.pack(fill='x', padx=10)
         
         self.title_label = ttk.Label(self.title_container, 
-                              text="🚀 Laravel Server Manager", 
+                              text="🚀 DevServer Manager", 
                               style='Title.TLabel')
         self.title_label.pack(side='left')
         
@@ -395,7 +395,7 @@ class MainWindow:
             self.log_text.tag_configure('WARNING', foreground='#ffaa00')
             self.log_text.tag_configure('SUCCESS', foreground='#44ff44')
             
-            self.log_message("Server Manager initialized successfully!", "SUCCESS")
+            self.log_message("DevServer Manager initialized successfully!", "SUCCESS")
             
         except Exception as e:
             app_logger.error(f"Error setting up log area: {e}")
@@ -644,9 +644,9 @@ class MainWindow:
             
             # Create tray icon with double-click action
             self.tray_icon = pystray.Icon(
-                "Server Manager",
+                "DevServer Manager",
                 image,
-                "Server Manager",
+                "DevServer Manager",
                 menu,
                 default_action=self._show_window  # Double-click action
             )

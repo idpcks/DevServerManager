@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Main Entry Point for Server Manager Application
+"""Main Entry Point for DevServer Manager Application
 
-This is the main entry point for the Server Manager GUI application.
+This is the main entry point for the DevServer Manager GUI application.
 It initializes all services and starts the GUI.
 """
 
@@ -23,7 +23,7 @@ from utils.file_utils import FileUtils
 from src.gui.splashscreen import show_splash
 
 
-class ServerManagerApp:
+class DevServerManagerApp:
     """Main application class that coordinates all components."""
     
     def __init__(self):
@@ -89,7 +89,7 @@ class ServerManagerApp:
             
             # Create root window
             self.root = tk.Tk()
-            self.root.title("Server Manager")
+            self.root.title("DevServer Manager")
             
             # Create main window
             self.main_window = MainWindow(self.root)
@@ -112,7 +112,7 @@ class ServerManagerApp:
     def run(self) -> None:
         """Run the application with splash screen."""
         try:
-            app_logger.info("Starting Server Manager Application")
+            app_logger.info("Starting DevServer Manager Application")
             
             # Define main app initialization function for splash screen callback
             def init_main_app():
@@ -227,11 +227,11 @@ def main() -> int:
     try:
         # Setup logging
         app_logger.info("=" * 50)
-        app_logger.info("Server Manager Application Starting")
+        app_logger.info("DevServer Manager Application Starting")
         app_logger.info("=" * 50)
         
         # Create and run application
-        app = ServerManagerApp()
+        app = DevServerManagerApp()
         app.run()
         
         app_logger.info("Application exited normally")

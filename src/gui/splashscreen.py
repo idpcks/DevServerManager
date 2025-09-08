@@ -13,7 +13,7 @@ class SplashScreen:
     def __init__(self, main_app_callback):
         self.main_app_callback = main_app_callback
         self.splash = tk.Tk()
-        self.splash.title("Server Manager")
+        self.splash.title("DevServer Manager")
         
         # Get current theme colors
         self.colors = theme_manager.get_current_colors()
@@ -105,7 +105,7 @@ class SplashScreen:
         # App title
         self.title_label = tk.Label(
             self.main_frame,
-            text="Server Manager",
+            text="DevServer Manager",
             font=('Arial', 16, 'bold'),
             fg=self.colors['fg'],
             bg=self.colors['bg']
@@ -156,7 +156,7 @@ class SplashScreen:
             ("Initializing...", 20),
             ("Loading components...", 40),
             ("Setting up interface...", 60),
-            ("Preparing server manager...", 80),
+            ("Preparing DevServer Manager...", 80),
             ("Almost ready...", 95),
             ("Ready!", 100)
         ]

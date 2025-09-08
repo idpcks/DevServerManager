@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
 class TemplateManager:
-    """Manages server templates and auto-detection of project types"""
+    """Manages server templates and auto-detection of project types for DevServer Manager Application"""
     
     def __init__(self, config_dir: str = None):
         if config_dir is None:

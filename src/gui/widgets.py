@@ -1,6 +1,6 @@
 """Reusable Widget Components
 
-This module contains reusable widget components for the Server Manager GUI.
+This module contains reusable widget components for the DevServer Manager GUI.
 """
 
 import tkinter as tk

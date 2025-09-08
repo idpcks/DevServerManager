@@ -1,4 +1,4 @@
-"""GUI Components for Server Manager Application
+"""GUI Components for DevServer Manager Application
 
 This package contains all GUI-related components including:
 - Main window

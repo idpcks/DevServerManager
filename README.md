@@ -1,4 +1,4 @@
-# 🚀 Server Manager - Modern Development Server Management
+# 🚀 DevServer Manager - Modern Development Server Management
 
 A modern, modular GUI application for managing multiple development servers with clean architecture and robust functionality. This application replaces traditional batch scripts with an intuitive interface and advanced features.
 
@@ -248,7 +248,7 @@ python main.py
 4. Import konfigurasi lama jika diperlukan
 5. Gunakan "🚀 Start All Servers" untuk menjalankan semua server
 
-### Dari Versi Lama Server Manager
+### Dari Versi Lama DevServer Manager
 1. Backup folder `config/`
 2. Update ke versi terbaru
 3. Jalankan aplikasi - konfigurasi akan otomatis di-migrate
@@ -261,7 +261,7 @@ python main.py
 - **Port Conflict**: Cek apakah port sudah digunakan aplikasi lain dengan `netstat -an`
 - **Permission**: Jalankan sebagai administrator jika diperlukan
 - **Dependencies**: Pastikan semua dependencies project terinstall
-- **Logs**: Lihat log terminal dan file `logs/servermanager.log` untuk detail error
+- **Logs**: Lihat log terminal dan file `logs/devserver_manager.log` untuk detail error
 
 ### ⚡ Command Tidak Berfungsi
 - **Syntax**: Pastikan command valid untuk OS yang digunakan

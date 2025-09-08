@@ -1,5 +1,5 @@
 @echo off
-echo Starting Laravel Server Manager GUI...
+echo Starting DevServer Manager GUI...
 echo.
 echo Make sure Python is installed on your system.
 echo.
@@ -22,10 +22,10 @@ if not exist "server_manager_gui.py" (
 )
 
 REM Launch the GUI application
-echo Launching Server Manager GUI...
+echo Launching DevServer Manager GUI...
 python server_manager_gui.py
 
 REM If we get here, the GUI was closed
 echo.
-echo Server Manager GUI closed.
+echo DevServer Manager GUI closed.
 pause
