@@ -47,6 +47,9 @@ class MainWindow:
         self.server_frames = {}
         self.log_text = None
         self.command_entry = None
+        self.log_widget = None
+        self.command_widget = None
+        self.status_bar = None
         self.theme_var = None
         self.theme_combo = None
         self.scrollable_frame = None
@@ -143,7 +146,10 @@ class MainWindow:
     def _setup_styles(self) -> None:
         """Setup custom styles for the application."""
         style = ttk.Style()
-        style.theme_use('clam')
+        try:
+            style.theme_use('clam')
+        except Exception:
+            pass
         
         # Configure styles
         style.configure('Title.TLabel', 
@@ -173,6 +179,7 @@ class MainWindow:
         try:
             # Configure root grid
             self.root.grid_rowconfigure(1, weight=1)
+            self.root.grid_rowconfigure(2, weight=0)
             self.root.grid_columnconfigure(0, weight=1)
             
             # Main title
@@ -192,6 +199,12 @@ class MainWindow:
             
             # Right panel - Log and commands
             self._setup_right_panel(main_frame)
+
+            # Status bar at bottom
+            from .widgets import StatusBarWidget
+            self.status_bar = StatusBarWidget(self.root)
+            self.status_bar.pack_forget()  # ensure reset
+            self.status_bar.pack(fill='x', side='bottom')
             
         except Exception as e:
             app_logger.error(f"Error setting up UI: {e}")
@@ -384,28 +397,9 @@ class MainWindow:
     def _setup_log_area(self, parent: tk.Widget) -> None:
         """Setup log display area with responsive grid layout."""
         try:
-            log_label = ttk.Label(parent, 
-                                text="📋 Server Logs", 
-                                style='Title.TLabel')
-            log_label.grid(row=0, column=0, pady=(5, 2), sticky='ew')
-            
-            # Log text area with scrollbar
-            self.log_text = scrolledtext.ScrolledText(
-                parent, 
-                height=20, 
-                bg='#1e1e1e', 
-                fg='#00ff00', 
-                font=('Consolas', 9),
-                wrap=tk.WORD
-            )
-            self.log_text.grid(row=1, column=0, sticky='nsew', padx=10, pady=(0, 5))
-            
-            # Configure text tags for different log levels
-            self.log_text.tag_configure('INFO', foreground='#00ff00')
-            self.log_text.tag_configure('ERROR', foreground='#ff4444')
-            self.log_text.tag_configure('WARNING', foreground='#ffaa00')
-            self.log_text.tag_configure('SUCCESS', foreground='#44ff44')
-            
+            from .widgets import LogWidget
+            self.log_widget = LogWidget(parent, height=20)
+            self.log_widget.grid(row=0, column=0, sticky='nsew')
             self.log_message("DevServer Manager initialized successfully!", "SUCCESS")
             
         except Exception as e:
@@ -414,41 +408,9 @@ class MainWindow:
     def _setup_command_area(self, parent: tk.Widget) -> None:
         """Setup custom command execution area."""
         try:
-            cmd_frame = tk.Frame(parent, bg='#34495e')
-            cmd_frame.grid(row=2, column=0, sticky='ew', padx=10, pady=5)
-            
-            # Configure cmd_frame grid
-            cmd_frame.grid_columnconfigure(0, weight=1)
-            
-            cmd_label = ttk.Label(cmd_frame, 
-                                text="💻 Custom Command", 
-                                style='Server.TLabel')
-            cmd_label.grid(row=0, column=0, sticky='w', pady=(0, 5))
-            
-            # Command input
-            input_frame = tk.Frame(cmd_frame, bg='#34495e')
-            input_frame.grid(row=1, column=0, sticky='ew', pady=5)
-            
-            # Configure input_frame grid
-            input_frame.grid_columnconfigure(0, weight=1)
-            
-            self.command_entry = tk.Entry(
-                input_frame, 
-                bg='#2c3e50', 
-                fg='#ecf0f1', 
-                font=('Consolas', 10),
-                insertbackground='#ecf0f1'
-            )
-            self.command_entry.grid(row=0, column=0, sticky='ew', padx=(0, 5))
-            self.command_entry.bind('<Return>', lambda e: self.execute_custom_command())
-            
-            execute_btn = ttk.Button(
-                input_frame, 
-                text="Execute", 
-                style='Info.TButton',
-                command=self.execute_custom_command
-            )
-            execute_btn.grid(row=0, column=1, sticky='e')
+            from .widgets import CommandWidget
+            self.command_widget = CommandWidget(parent, on_execute=self.execute_custom_command_text)
+            self.command_widget.grid(row=2, column=0, sticky='ew', padx=10, pady=5)
             
         except Exception as e:
             app_logger.error(f"Error setting up command area: {e}")
@@ -461,6 +423,7 @@ class MainWindow:
             
             # Load and apply initial theme
             theme_manager.load_theme()
+            theme_manager.apply_ttk_styles()
             self._apply_theme()
         except Exception as e:
             app_logger.error(f"Error initializing theme manager: {e}")
@@ -487,6 +450,8 @@ class MainWindow:
             
             # Apply theme recursively to all widgets
             self._apply_theme_recursive(self.root, colors)
+            # Update ttk styles to reflect theme
+            theme_manager.apply_ttk_styles()
             
         except Exception as e:
             app_logger.error(f"Error in theme callback: {e}")
@@ -565,7 +530,19 @@ class MainWindow:
     def _add_log_to_text(self, message: str, level: str) -> None:
         """Add log message to text widget (called from main thread)."""
         try:
-            if self.log_text and self.log_processor_running:
+            if self.log_widget and self.log_processor_running:
+                # Strip existing timestamp/level if present to avoid duplication
+                try:
+                    content = message
+                    if message.startswith('['):
+                        # Find second closing bracket pattern "] "
+                        second = message.find('] ', message.find(']') + 1)
+                        if second != -1:
+                            content = message[second+2:].strip()
+                    self.log_widget.add_message(content, level)
+                except Exception:
+                    self.log_widget.add_message(message.strip(), level)
+            elif self.log_text and self.log_processor_running:
                 self.log_text.insert(tk.END, message, level)
                 self.log_text.see(tk.END)
         except Exception as e:
@@ -1154,7 +1131,7 @@ class MainWindow:
             app_logger.error(f"Error clearing log: {e}")
     
     def execute_custom_command(self) -> None:
-        """Execute custom command from entry field."""
+        """Execute custom command from legacy entry field."""
         import subprocess
         import threading
         
@@ -1195,5 +1172,39 @@ class MainWindow:
             cmd_thread = threading.Thread(target=run_command, daemon=True)
             cmd_thread.start()
             
+        except Exception as e:
+            app_logger.error(f"Error executing custom command: {e}")
+
+    def execute_custom_command_text(self, command: str) -> None:
+        """Execute a provided command string (used by CommandWidget)."""
+        import subprocess
+        import threading
+        try:
+            cmd = (command or '').strip()
+            if not cmd:
+                return
+            self.log_message(f"Executing: {cmd}", "INFO")
+            def run_command():
+                try:
+                    result = subprocess.run(
+                        cmd,
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=30
+                    )
+                    if result.stdout:
+                        self.log_message(f"Output: {result.stdout.strip()}", "INFO")
+                    if result.stderr:
+                        self.log_message(f"Error: {result.stderr.strip()}", "ERROR")
+                    if result.returncode == 0:
+                        self.log_message("Command executed successfully", "SUCCESS")
+                    else:
+                        self.log_message(f"Command failed with code {result.returncode}", "ERROR")
+                except subprocess.TimeoutExpired:
+                    self.log_message("Command timed out (30s limit)", "ERROR")
+                except Exception as e:
+                    self.log_message(f"Command execution error: {str(e)}", "ERROR")
+            threading.Thread(target=run_command, daemon=True).start()
         except Exception as e:
             app_logger.error(f"Error executing custom command: {e}")

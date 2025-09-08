@@ -35,7 +35,8 @@ class ThemeManager:
                 "success": "#27ae60",
                 "warning": "#f39c12",
                 "error": "#e74c3c",
-                "info": "#3498db"
+                "info": "#3498db",
+                "accent": "#3b82f6"
             },
             "light": {
                 "bg": "#ffffff",
@@ -58,7 +59,8 @@ class ThemeManager:
                 "success": "#28a745",
                 "warning": "#ffc107",
                 "error": "#dc3545",
-                "info": "#17a2b8"
+                "info": "#17a2b8",
+                "accent": "#2563eb"
             }
         }
         
@@ -169,6 +171,51 @@ class ThemeManager:
                 )
         except Exception as e:
             print(f"Error applying theme to widget: {e}")
+
+    def apply_ttk_styles(self):
+        """Configure ttk styles dynamically based on current theme colors."""
+        try:
+            import tkinter as tk
+            from tkinter import ttk
+        except Exception:
+            return
+        colors = self.get_current_colors()
+        style = ttk.Style()
+        # Use clam as baseline for wider style coverage
+        try:
+            style.theme_use('clam')
+        except Exception:
+            pass
+        # Base fonts
+        base_font = ('Segoe UI', 10)
+        title_font = ('Segoe UI', 14, 'bold')
+        # Labels
+        style.configure('TLabel', background=colors['bg'], foreground=colors['fg'], font=base_font)
+        style.configure('Title.TLabel', background=colors['frame_bg'], foreground=colors['fg'], font=title_font)
+        style.configure('Server.TLabel', background=colors['frame_bg'], foreground=colors['fg'], font=('Segoe UI', 10))
+        # Frames
+        style.configure('TFrame', background=colors['frame_bg'])
+        # Buttons with hover/pressed map
+        style.configure('TButton', font=base_font, padding=6, background=colors['button_bg'], foreground=colors['button_fg'])
+        style.map('TButton',
+                  background=[('active', colors['button_active_bg']), ('pressed', colors['button_active_bg'])],
+                  foreground=[('disabled', '#bdc3c7')])
+        style.configure('Success.TButton', background=colors['success'], foreground='#ffffff')
+        style.map('Success.TButton', background=[('active', colors['success'])])
+        style.configure('Danger.TButton', background=colors['error'], foreground='#ffffff')
+        style.map('Danger.TButton', background=[('active', colors['error'])])
+        style.configure('Info.TButton', background=colors['info'], foreground='#ffffff')
+        style.map('Info.TButton', background=[('active', colors['info'])])
+        # Entry
+        style.configure('TEntry', fieldbackground=colors['entry_bg'], foreground=colors['entry_fg'])
+        # Combobox
+        style.configure('TCombobox', fieldbackground=colors['entry_bg'], background=colors['entry_bg'], foreground=colors['entry_fg'])
+        # Notebook
+        style.configure('TNotebook', background=colors['frame_bg'])
+        style.configure('TNotebook.Tab', background=colors['frame_bg'], foreground=colors['fg'], padding=(10, 6))
+        style.map('TNotebook.Tab', background=[('selected', colors['accent'])], foreground=[('selected', '#ffffff')])
+        # Scrollbar
+        style.configure('Vertical.TScrollbar', background=colors['scrollbar_bg'], troughcolor=colors['scrollbar_bg'])
     
     def save_theme_config(self):
         """Save theme configuration to file"""

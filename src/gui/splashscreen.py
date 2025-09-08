@@ -83,7 +83,8 @@ class SplashScreen:
         """Setup logo display"""
         try:
             # Load and resize logo responsively
-            logo_image = Image.open("logo.jpg")
+            assets_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'logo.jpg')
+            logo_image = Image.open(assets_path)
             # Scale logo size based on window size (15-25% of window width)
             logo_size = max(80, min(150, int(self.splash_width * 0.2)))
             logo_image = logo_image.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
