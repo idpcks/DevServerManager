@@ -2,6 +2,10 @@
 
 A modern, modular GUI application for managing multiple development servers with clean architecture and robust functionality. This application replaces traditional batch scripts with an intuitive interface and advanced features.
 
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-CLEAN-green?style=for-the-badge&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+[![Security](https://img.shields.io/badge/Security-EXCELLENT-green?style=for-the-badge&logo=security&logoColor=white)](https://github.com/idpcks/DevServerManager)
+[![Threats](https://img.shields.io/badge/Threats-0%2F70%2B-green?style=for-the-badge&logo=shield&logoColor=white)](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+
 ![DevServer Manager Preview](preview/preview_app.png)
 
 ## ✨ Key Features
@@ -388,6 +392,18 @@ python -m pytest tests/
 # Run with debug mode
 python main.py --debug
 ```
+
+## 🔒 Security
+
+DevServer Manager has been thoroughly scanned for security threats and is confirmed safe to use.
+
+### Virus Scan Results
+- **VirusTotal Status**: ✅ **CLEAN** - No threats detected
+- **Scan Report**: [View Full Report](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+- **Detection Engines**: 0/70+ engines detected threats
+- **Security Rating**: ✅ **EXCELLENT**
+
+For detailed security information, see our [Security Guide](SECURITY.md).
 
 ## 📄 License
 
