@@ -17,9 +17,23 @@ def clean_build_dirs():
             shutil.rmtree(dir_name)
             print(f"Cleaned {dir_name} directory")
 
+def get_version():
+    """Ambil versi dari setup.py"""
+    try:
+        with open('setup.py', 'r', encoding='utf-8') as f:
+            content = f.read()
+            for line in content.split('\n'):
+                if 'version=' in line:
+                    version = line.split('version=')[1].split(',')[0].strip().strip('"\'')
+                    return version
+    except Exception:
+        pass
+    return "1.0.0"
+
 def build_executable():
     """Build executable menggunakan PyInstaller"""
-    print("Starting build process...")
+    version = get_version()
+    print(f"Starting build process for version {version}...")
     
     # Pastikan icon file ada
     icon_path = "assets/app_icon.ico"
@@ -83,7 +97,8 @@ def build_executable():
 
 def create_release_package():
     """Membuat package release dengan file yang diperlukan"""
-    print("Creating release package...")
+    version = get_version()
+    print(f"Creating release package for version {version}...")
     
     release_dir = "release"
     if os.path.exists(release_dir):
@@ -115,8 +130,7 @@ def create_release_package():
             print(f"Copied {file_path} to release directory")
     
     # Create user guide
-    user_guide = """
-# DevServer Manager - Panduan Penggunaan
+    user_guide = f"""# DevServer Manager v{version} - Panduan Penggunaan
 
 ## Cara Menjalankan
 1. Double-click file `DevServerManager.exe`
@@ -134,6 +148,9 @@ def create_release_package():
 ## Sistem Requirements
 - Windows 10/11
 - .NET Framework (biasanya sudah terinstall)
+
+## Versi {version}
+Lihat CHANGELOG.md untuk detail perubahan versi ini.
 """
     
     with open(os.path.join(release_dir, "PANDUAN_PENGGUNAAN.txt"), "w", encoding="utf-8") as f:
@@ -144,7 +161,9 @@ def create_release_package():
 
 def main():
     """Main function"""
+    version = get_version()
     print("DevServer Manager Build Script")
+    print(f"Version: {version}")
     print("=" * 40)
     
     # Clean previous builds
@@ -161,8 +180,11 @@ def main():
         sys.exit(1)
     
     print("\nBuild completed successfully!")
+    print(f"Version: {version}")
     print("Executable location: dist/DevServerManager.exe")
     print("Release package: release/")
+    print("\nTo create a GitHub release:")
+    print(f"python scripts/create_release.py {version}")
 
 if __name__ == "__main__":
     main()
