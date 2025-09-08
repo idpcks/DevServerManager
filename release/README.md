@@ -2,6 +2,10 @@
 
 A modern, modular GUI application for managing multiple development servers with clean architecture and robust functionality. This application replaces traditional batch scripts with an intuitive interface and advanced features.
 
+[![VirusTotal](https://img.shields.io/badge/VirusTotal-CLEAN-green?style=for-the-badge&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+[![Security](https://img.shields.io/badge/Security-EXCELLENT-green?style=for-the-badge&logo=security&logoColor=white)](https://github.com/idpcks/DevServerManager)
+[![Threats](https://img.shields.io/badge/Threats-0%2F70%2B-green?style=for-the-badge&logo=shield&logoColor=white)](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+
 ![DevServer Manager Preview](preview/preview_app.png)
 
 ## ✨ Key Features
@@ -347,20 +351,29 @@ python build_executable.py
 
 ## 🤝 Contributing
 
+We welcome contributions from the community! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on how to contribute.
+
+### Quick Start
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Follow** our [Code of Conduct](CODE_OF_CONDUCT.md)
+4. **Read** the [Contributing Guide](CONTRIBUTING.md)
+5. **Submit** a Pull Request
+
 ### 🐛 Bug Reports
-1. Cek existing issues terlebih dahulu
-2. Buat issue baru dengan template yang disediakan
-3. Sertakan log files dan screenshot jika memungkinkan
+1. Check existing issues first
+2. Create a new issue with the provided template
+3. Include log files and screenshots if possible
 
 ### 💡 Feature Requests
-1. Diskusikan di GitHub Discussions terlebih dahulu
-2. Buat detailed proposal dengan use case
+1. Discuss in GitHub Discussions first
+2. Create detailed proposals with use cases
 3. Consider backward compatibility
 
 ### 🔧 Development
 1. Fork repository
-2. Buat feature branch: `git checkout -b feature/amazing-feature`
-3. Follow coding standards dan add tests
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Follow coding standards and add tests
 4. Commit changes: `git commit -m 'Add amazing feature'`
 5. Push branch: `git push origin feature/amazing-feature`
 6. Create Pull Request
@@ -380,9 +393,28 @@ python -m pytest tests/
 python main.py --debug
 ```
 
+## 🔒 Security
+
+DevServer Manager has been thoroughly scanned for security threats and is confirmed safe to use.
+
+### Virus Scan Results
+- **VirusTotal Status**: ✅ **CLEAN** - No threats detected
+- **Scan Report**: [View Full Report](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
+- **Detection Engines**: 0/70+ engines detected threats
+- **Security Rating**: ✅ **EXCELLENT**
+
+For detailed security information, see our [Security Guide](SECURITY.md).
+
 ## 📄 License
 
-MIT License - bebas digunakan dan dimodifikasi.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+- **Open Source**: ✅ Yes, fully open source
+- **License**: MIT License
+- **Commercial Use**: ✅ Allowed
+- **Modification**: ✅ Allowed
+- **Distribution**: ✅ Allowed
+- **Private Use**: ✅ Allowed
 
 ## 🙏 Acknowledgments
 

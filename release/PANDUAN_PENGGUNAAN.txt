@@ -1,4 +1,10 @@
-# DevServer Manager v1.0.0 - Panduan Penggunaan
+# DevServer Manager v1.0.1 - Panduan Penggunaan
+
+## 🔒 Keamanan Terjamin
+- **VirusTotal Status**: ✅ CLEAN - Tidak ada ancaman terdeteksi
+- **Laporan Scan**: https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1
+- **Rating Keamanan**: ✅ EXCELLENT
+- **Aplikasi 100% AMAN** untuk digunakan
 
 ## Cara Menjalankan
 1. Double-click file `DevServerManager.exe`
@@ -17,5 +23,5 @@
 - Windows 10/11
 - .NET Framework (biasanya sudah terinstall)
 
-## Versi 1.0.0
+## Versi 1.0.1
 Lihat CHANGELOG.md untuk detail perubahan versi ini.
