@@ -1354,19 +1354,30 @@ class MainWindow:
         try:
             from tkinter import messagebox
             
-            about_text = """DevServer Manager v1.0.1
+            # Get current version from update checker
+            current_version = self.update_checker.get_current_version()
+            
+            about_text = f"""DevServer Manager v{current_version}
 
-A modern GUI application for managing multiple development servers.
+🚀 Modern GUI Application for Managing Development Servers
+
+Version 2.x Series - Complete Rewrite with Enhanced Features
 
 Features:
-• Server Templates for various technologies
-• Auto-detection of project types
-• Real-time server monitoring
-• System tray integration
-• Theme customization
+• ✨ Live Update System with automatic downloads
+• 📦 Backup & Import configuration system  
+• 🎯 Server Templates for various technologies
+• ⚡ Auto-detection of project types
+• 📊 Real-time server monitoring
+• 🎨 System tray integration
+• 🔧 Theme customization
+• 🛡️ Enhanced security and stability
 
 Developed by idpcks
-GitHub: https://github.com/idpcks/DevServerManager"""
+GitHub: https://github.com/idpcks/DevServerManager
+Email: idpcks.container103@slmail.me
+
+© 2025 DevServer Manager - All rights reserved"""
             
             messagebox.showinfo("About DevServer Manager", about_text)
             
