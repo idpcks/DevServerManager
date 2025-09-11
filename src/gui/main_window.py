@@ -27,7 +27,7 @@ except ImportError as e:
 from ..services.server_manager import ServerManagerService
 from ..services.config_manager import ConfigManager
 from ..services.update_checker import UpdateCheckerService
-from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog, LiveUpdateDialog
+from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog, LiveUpdateDialog, BackupExportDialog, ImportRestoreDialog
 from utils.theme_manager import theme_manager
 from utils.logger import app_logger
 
@@ -213,8 +213,7 @@ class MainWindow:
             # Status bar at bottom
             from .widgets import StatusBarWidget
             self.status_bar = StatusBarWidget(self.root)
-            self.status_bar.pack_forget()  # ensure reset
-            self.status_bar.pack(fill='x', side='bottom')
+            self.status_bar.grid(row=3, column=0, sticky='ew')
             
         except Exception as e:
             app_logger.error(f"Error setting up UI: {e}")
@@ -257,6 +256,22 @@ class MainWindow:
         # Create menu bar
         self.menubar = tk.Menu(self.root, bg=colors['frame_bg'], fg=colors['fg'])
         self.root.config(menu=self.menubar)
+        
+        # File menu
+        file_menu = tk.Menu(self.menubar, tearoff=0, bg=colors['frame_bg'], fg=colors['fg'])
+        self.menubar.add_cascade(label="File", menu=file_menu)
+        
+        # Backup & Import submenu
+        backup_menu = tk.Menu(file_menu, tearoff=0, bg=colors['frame_bg'], fg=colors['fg'])
+        file_menu.add_cascade(label="Backup & Import", menu=backup_menu)
+        
+        backup_menu.add_command(label="📦 Export Settings...", command=self._export_settings)
+        backup_menu.add_command(label="📥 Import Settings...", command=self._import_settings)
+        backup_menu.add_separator()
+        backup_menu.add_command(label="💾 Create Backup...", command=self._create_manual_backup)
+        
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self._on_closing)
         
         # Help menu
         help_menu = tk.Menu(self.menubar, tearoff=0, bg=colors['frame_bg'], fg=colors['fg'])
@@ -425,6 +440,27 @@ class MainWindow:
                                style='Info.TButton',
                                command=self.refresh_server_list)
         refresh_btn.pack(fill='x', padx=5, pady=2)
+        
+        # Backup/Import buttons
+        backup_frame = tk.Frame(parent, bg='#34495e', relief='groove', bd=2)
+        backup_frame.pack(fill='x', padx=10, pady=10)
+        
+        backup_label = ttk.Label(backup_frame, 
+                               text="Backup & Import", 
+                               style='Server.TLabel')
+        backup_label.pack(pady=5)
+        
+        export_btn = ttk.Button(backup_frame, 
+                              text="📦 Export Settings", 
+                              style='Info.TButton',
+                              command=self._export_settings)
+        export_btn.pack(fill='x', padx=5, pady=2)
+        
+        import_btn = ttk.Button(backup_frame, 
+                              text="📥 Import Settings", 
+                              style='Info.TButton',
+                              command=self._import_settings)
+        import_btn.pack(fill='x', padx=5, pady=2)
     
     def _setup_log_area(self, parent: tk.Widget) -> None:
         """Setup log display area with responsive grid layout."""
@@ -1358,3 +1394,83 @@ GitHub: https://github.com/idpcks/DevServerManager"""
             
         except Exception as e:
             app_logger.error(f"Error stopping auto-update check: {e}")
+    
+    def _export_settings(self) -> None:
+        """Export/backup server settings."""
+        try:
+            dialog = BackupExportDialog(self.root, self.config_manager)
+            if dialog.result and dialog.result.get('success'):
+                file_path = dialog.result.get('file_path')
+                self.log_message(f"Settings exported to: {file_path}", "SUCCESS")
+                
+        except Exception as e:
+            app_logger.error(f"Error exporting settings: {e}")
+            self.log_message(f"Failed to export settings: {str(e)}", "ERROR")
+    
+    def _import_settings(self) -> None:
+        """Import server settings from backup."""
+        try:
+            dialog = ImportRestoreDialog(self.root, self.config_manager)
+            if dialog.result and dialog.result.get('success'):
+                imported_count = dialog.result.get('imported_servers', 0)
+                self.log_message(f"Successfully imported {imported_count} server configurations", "SUCCESS")
+                
+                # Refresh the server list to show imported servers
+                self._load_servers()
+                self.refresh_server_list()
+                
+                # Show restart recommendation
+                messagebox.showinfo(
+                    "Import Complete",
+                    "Settings imported successfully!\n\nSome changes may require restarting the application."
+                )
+                
+        except Exception as e:
+            app_logger.error(f"Error importing settings: {e}")
+            self.log_message(f"Failed to import settings: {str(e)}", "ERROR")
+    
+    def _create_manual_backup(self) -> None:
+        """Create a manual backup using the backup script."""
+        try:
+            import subprocess
+            import os
+            
+            # Run the backup script
+            backup_script = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'backup_config.py')
+            
+            if os.path.exists(backup_script):
+                # Use UTF-8 encoding for Windows compatibility
+                result = subprocess.run(
+                    ['python', backup_script], 
+                    capture_output=True, 
+                    text=True, 
+                    cwd=os.path.dirname(backup_script),
+                    encoding='utf-8',
+                    errors='replace'  # Replace invalid characters instead of failing
+                )
+                
+                if result.returncode == 0:
+                    self.log_message("Manual backup created successfully", "SUCCESS")
+                    # Show only the last few lines of output
+                    output_lines = result.stdout.strip().split('\n')
+                    success_msg = "Manual backup created successfully!\n\n"
+                    if len(output_lines) > 0:
+                        # Find backup file name from output
+                        for line in output_lines:
+                            if "devserver_backup_" in line and ".zip" in line:
+                                success_msg += f"Backup file: {line.split(': ')[-1]}\n"
+                                break
+                    success_msg += "\nCheck the application log for detailed information."
+                    
+                    messagebox.showinfo("Backup Created", success_msg)
+                else:
+                    error_msg = result.stderr if result.stderr else "Unknown error occurred"
+                    self.log_message(f"Backup script failed: {error_msg}", "ERROR")
+                    messagebox.showerror("Error", f"Backup failed:\n{error_msg[:200]}..." if len(error_msg) > 200 else f"Backup failed:\n{error_msg}")
+            else:
+                self.log_message("Backup script not found", "ERROR")
+                messagebox.showerror("Error", "Backup script not found")
+                
+        except Exception as e:
+            app_logger.error(f"Error creating manual backup: {e}")
+            self.log_message(f"Failed to create backup: {str(e)}", "ERROR")

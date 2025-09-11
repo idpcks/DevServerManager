@@ -17,6 +17,8 @@ Aplikasi GUI modern untuk mengelola multiple development servers dengan arsitekt
 - **💻 Custom Commands**: Eksekusi command custom dengan output real-time
 - **🔔 System Tray**: Minimize ke system tray dengan quick access
 - **🎨 Theme Customization**: Interface yang dapat dikustomisasi
+- **💾 Backup & Import**: Export/import konfigurasi server untuk migrasi dan sharing
+- **🔄 Live Updates**: Auto-update system dengan backup otomatis
 
 ## 🚀 Quick Start
 
@@ -62,6 +64,7 @@ python main.py
 ## 📚 Dokumentasi Lengkap
 
 - **[User Guide](docs/USER_GUIDE.md)**: Panduan lengkap penggunaan aplikasi
+- **[Backup & Import Guide](docs/BACKUP_IMPORT_GUIDE.md)**: Panduan backup dan import konfigurasi
 - **[Configuration Guide](docs/CONFIGURATION.md)**: Panduan konfigurasi dan kustomisasi
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Solusi masalah umum
 - **[Developer Guide](docs/DEVELOPER.md)**: Panduan untuk developer

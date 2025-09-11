@@ -12,6 +12,7 @@ from ..services.template_manager import TemplateManager
 from ..services.update_checker import UpdateInfo
 from ..services.download_manager import DownloadManager, DownloadProgress
 from ..services.update_installer import UpdateInstaller
+from ..services.config_manager import ConfigManager
 
 
 class ServerConfigDialog:
@@ -1044,6 +1045,419 @@ class UpdateDialog:
             self.dialog.destroy()
         except Exception as e:
             messagebox.showerror("Error", f"Could not open download URL: {e}")
+
+
+class BackupExportDialog:
+    """Dialog for backing up and exporting server configurations."""
+    
+    def __init__(self, parent: tk.Widget, config_manager: ConfigManager):
+        self.config_manager = config_manager
+        self.result = None
+        
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Backup Settings")
+        self.dialog.geometry("500x350")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(False, False)
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        self.dialog.geometry("+%d+%d" % (
+            parent.winfo_rootx() + 50,
+            parent.winfo_rooty() + 50
+        ))
+        
+        self.setup_dialog_ui()
+        self.dialog.wait_window()
+    
+    def setup_dialog_ui(self) -> None:
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50')
+        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
+        
+        # Title
+        title_label = tk.Label(
+            main_frame, text="📦 Backup Settings",
+            bg='#2c3e50', fg='#ecf0f1', font=('Arial', 16, 'bold')
+        )
+        title_label.pack(pady=(0, 20))
+        
+        # Export location
+        location_frame = tk.LabelFrame(
+            main_frame, text="Export Location",
+            bg='#34495e', fg='#ecf0f1', font=('Arial', 11, 'bold')
+        )
+        location_frame.pack(fill='x', pady=(0, 20))
+        
+        location_input_frame = tk.Frame(location_frame, bg='#34495e')
+        location_input_frame.pack(fill='x', padx=10, pady=10)
+        
+        self.location_entry = tk.Entry(
+            location_input_frame, bg='#2c3e50', fg='#ecf0f1',
+            font=('Arial', 10), insertbackground='#ecf0f1'
+        )
+        self.location_entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
+        
+        import os
+        default_location = os.path.join(os.path.expanduser('~'), 'Desktop', 'devserver_backup.json')
+        self.location_entry.insert(0, default_location)
+        
+        browse_btn = tk.Button(
+            location_input_frame, text="📁 Browse",
+            bg='#3498db', fg='white', font=('Arial', 9),
+            command=self.browse_export_location
+        )
+        browse_btn.pack(side='right')
+        
+        # Backup options
+        options_frame = tk.LabelFrame(
+            main_frame, text="Backup Options",
+            bg='#34495e', fg='#ecf0f1', font=('Arial', 11, 'bold')
+        )
+        options_frame.pack(fill='x', pady=(0, 20))
+        
+        self.backup_servers = tk.BooleanVar(value=True)
+        servers_cb = tk.Checkbutton(
+            options_frame, text="✓ Server configurations",
+            variable=self.backup_servers, bg='#34495e', fg='#ecf0f1',
+            selectcolor='#3498db', font=('Arial', 10), state='disabled'
+        )
+        servers_cb.pack(anchor='w', padx=10, pady=5)
+        
+        self.backup_theme = tk.BooleanVar(value=True)
+        theme_cb = tk.Checkbutton(
+            options_frame, text="Theme settings",
+            variable=self.backup_theme, bg='#34495e', fg='#ecf0f1',
+            selectcolor='#3498db', font=('Arial', 10)
+        )
+        theme_cb.pack(anchor='w', padx=10, pady=5)
+        
+        # Buttons
+        button_frame = tk.Frame(main_frame, bg='#2c3e50')
+        button_frame.pack(fill='x')
+        
+        export_btn = tk.Button(
+            button_frame, text="💾 Create Backup",
+            bg='#27ae60', fg='white', font=('Arial', 10, 'bold'),
+            command=self.create_backup
+        )
+        export_btn.pack(side='left', padx=(0, 10))
+        
+        cancel_btn = tk.Button(
+            button_frame, text="❌ Cancel",
+            bg='#e74c3c', fg='white', font=('Arial', 10, 'bold'),
+            command=self.cancel
+        )
+        cancel_btn.pack(side='left')
+    
+    def browse_export_location(self) -> None:
+        try:
+            file_path = filedialog.asksaveasfilename(
+                title="Save Backup As",
+                initialdir=os.path.expanduser('~'),
+                initialfile="devserver_backup.json",
+                defaultextension=".json",
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+            )
+            if file_path:
+                self.location_entry.delete(0, tk.END)
+                self.location_entry.insert(0, file_path)
+        except Exception as e:
+            messagebox.showerror("Error", f"Error browsing location: {str(e)}")
+    
+    def create_backup(self) -> None:
+        try:
+            export_path = self.location_entry.get().strip()
+            if not export_path:
+                messagebox.showerror("Error", "Please specify an export location.")
+                return
+            
+            backup_data = {
+                'metadata': {
+                    'created_at': datetime.now().isoformat(),
+                    'app_version': '2.0.0',
+                    'backup_type': 'user_export'
+                }
+            }
+            
+            # Server configurations
+            servers = self.config_manager.load_server_configs()
+            servers_dict = {}
+            for name, config in servers.items():
+                if hasattr(config, 'to_dict'):
+                    servers_dict[name] = config.to_dict()
+                else:
+                    servers_dict[name] = config
+            backup_data['servers'] = servers_dict
+            
+            # Theme settings
+            if self.backup_theme.get():
+                try:
+                    theme_config = self.config_manager.load_theme_config()
+                    backup_data['theme_config'] = theme_config
+                except Exception:
+                    backup_data['theme_config'] = {}
+            
+            # Save backup file
+            os.makedirs(os.path.dirname(export_path), exist_ok=True)
+            import json
+            with open(export_path, 'w', encoding='utf-8') as f:
+                json.dump(backup_data, f, indent=4, ensure_ascii=False)
+            
+            self.result = {'success': True, 'file_path': export_path}
+            
+            messagebox.showinfo(
+                "Backup Created",
+                f"Backup successfully created!\n\nLocation: {export_path}"
+            )
+            self.dialog.destroy()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to create backup: {str(e)}")
+    
+    def cancel(self) -> None:
+        self.result = None
+        self.dialog.destroy()
+
+
+class ImportRestoreDialog:
+    """Dialog for importing server configurations."""
+    
+    def __init__(self, parent: tk.Widget, config_manager: ConfigManager):
+        self.config_manager = config_manager
+        self.result = None
+        self.import_data = None
+        
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Import Settings")
+        self.dialog.geometry("500x400")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(True, True)
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        self.dialog.geometry("+%d+%d" % (
+            parent.winfo_rootx() + 50,
+            parent.winfo_rooty() + 50
+        ))
+        
+        self.setup_dialog_ui()
+        self.dialog.wait_window()
+    
+    def setup_dialog_ui(self) -> None:
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50')
+        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
+        
+        # Title
+        title_label = tk.Label(
+            main_frame, text="📥 Import Settings",
+            bg='#2c3e50', fg='#ecf0f1', font=('Arial', 16, 'bold')
+        )
+        title_label.pack(pady=(0, 20))
+        
+        # File selection
+        file_frame = tk.LabelFrame(
+            main_frame, text="Select Backup File",
+            bg='#34495e', fg='#ecf0f1', font=('Arial', 11, 'bold')
+        )
+        file_frame.pack(fill='x', pady=(0, 20))
+        
+        file_input_frame = tk.Frame(file_frame, bg='#34495e')
+        file_input_frame.pack(fill='x', padx=10, pady=10)
+        
+        self.file_entry = tk.Entry(
+            file_input_frame, bg='#2c3e50', fg='#ecf0f1',
+            font=('Arial', 10), insertbackground='#ecf0f1'
+        )
+        self.file_entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
+        self.file_entry.bind('<KeyRelease>', self.on_file_path_change)
+        
+        browse_btn = tk.Button(
+            file_input_frame, text="📁 Browse",
+            bg='#3498db', fg='white', font=('Arial', 9),
+            command=self.browse_import_file
+        )
+        browse_btn.pack(side='right')
+        
+        # Preview
+        self.preview_frame = tk.LabelFrame(
+            main_frame, text="Backup Preview",
+            bg='#34495e', fg='#ecf0f1', font=('Arial', 11, 'bold')
+        )
+        self.preview_frame.pack(fill='both', expand=True, pady=(0, 20))
+        
+        self.preview_text = scrolledtext.ScrolledText(
+            self.preview_frame, height=8, bg='#2c3e50', fg='#ecf0f1',
+            font=('Consolas', 9), insertbackground='#ecf0f1', state='disabled'
+        )
+        self.preview_text.pack(fill='both', expand=True, padx=10, pady=10)
+        
+        # Buttons
+        button_frame = tk.Frame(main_frame, bg='#2c3e50')
+        button_frame.pack(fill='x')
+        
+        self.import_btn = tk.Button(
+            button_frame, text="📥 Import Settings",
+            bg='#27ae60', fg='white', font=('Arial', 10, 'bold'),
+            command=self.import_settings, state='disabled'
+        )
+        self.import_btn.pack(side='left', padx=(0, 10))
+        
+        cancel_btn = tk.Button(
+            button_frame, text="❌ Cancel",
+            bg='#e74c3c', fg='white', font=('Arial', 10, 'bold'),
+            command=self.cancel
+        )
+        cancel_btn.pack(side='left')
+        
+        self.update_preview()
+    
+    def browse_import_file(self) -> None:
+        try:
+            file_path = filedialog.askopenfilename(
+                title="Select Backup File",
+                initialdir=os.path.expanduser('~'),
+                filetypes=[("JSON files", "*.json"), ("All files", "*.*")]
+            )
+            if file_path:
+                self.file_entry.delete(0, tk.END)
+                self.file_entry.insert(0, file_path)
+                self.load_import_file(file_path)
+        except Exception as e:
+            messagebox.showerror("Error", f"Error browsing file: {str(e)}")
+    
+    def on_file_path_change(self, event=None) -> None:
+        file_path = self.file_entry.get().strip()
+        if file_path and os.path.exists(file_path):
+            self.load_import_file(file_path)
+        else:
+            self.import_data = None
+            self.update_preview()
+    
+    def load_import_file(self, file_path: str) -> None:
+        try:
+            import json
+            with open(file_path, 'r', encoding='utf-8') as f:
+                self.import_data = json.load(f)
+            
+            if not isinstance(self.import_data, dict):
+                raise ValueError("Invalid backup file format")
+            
+            self.update_preview()
+            self.import_btn.config(state='normal')
+            
+        except Exception as e:
+            self.import_data = None
+            self.update_preview(f"Error loading file: {str(e)}")
+            self.import_btn.config(state='disabled')
+    
+    def update_preview(self, error_message: str = None) -> None:
+        self.preview_text.config(state='normal')
+        self.preview_text.delete('1.0', tk.END)
+        
+        if error_message:
+            self.preview_text.insert('1.0', f"❌ {error_message}")
+        elif not self.import_data:
+            self.preview_text.insert('1.0', "Select a backup file to see preview...")
+        else:
+            try:
+                preview_info = []
+                metadata = self.import_data.get('metadata', {})
+                preview_info.append(f"📦 Backup Information:")
+                preview_info.append(f"   Created: {metadata.get('created_at', 'Unknown')}")
+                preview_info.append(f"   Version: {metadata.get('app_version', 'Unknown')}")
+                preview_info.append("")
+                
+                if 'servers' in self.import_data:
+                    servers = self.import_data['servers']
+                    preview_info.append(f"📋 Server Configurations: {len(servers)} servers")
+                    for name, config in list(servers.items())[:3]:
+                        port = config.get('port', 'N/A')
+                        preview_info.append(f"   • {name} (Port: {port})")
+                    if len(servers) > 3:
+                        preview_info.append(f"   ... and {len(servers) - 3} more")
+                    preview_info.append("")
+                
+                if 'theme_config' in self.import_data:
+                    theme_config = self.import_data['theme_config']
+                    current_theme = theme_config.get('current_theme', 'unknown')
+                    preview_info.append(f"🎨 Theme Settings: {current_theme} theme")
+                
+                self.preview_text.insert('1.0', '\n'.join(preview_info))
+                
+            except Exception as e:
+                self.preview_text.insert('1.0', f"Error generating preview: {str(e)}")
+        
+        self.preview_text.config(state='disabled')
+    
+    def import_settings(self) -> None:
+        try:
+            if not self.import_data:
+                messagebox.showerror("Error", "No valid backup data to import.")
+                return
+            
+            # Confirm import
+            servers_count = len(self.import_data.get('servers', {}))
+            confirm = messagebox.askyesno(
+                "Confirm Import",
+                f"This will import {servers_count} server configurations.\n\nDo you want to proceed?"
+            )
+            
+            if not confirm:
+                return
+            
+            # Import servers
+            if 'servers' in self.import_data:
+                from ..models.server_config import ServerConfig
+                imported_servers = {}
+                
+                for name, config_data in self.import_data['servers'].items():
+                    server_config = ServerConfig(
+                        name=config_data.get('name', name),
+                        path=config_data.get('path', ''),
+                        port=str(config_data.get('port', 8000)),
+                        command=config_data.get('command', 'python -m http.server'),
+                        template_id=config_data.get('template_id', 'custom'),
+                        category=config_data.get('category', ''),
+                        env_vars=config_data.get('env_vars', {}),
+                        description=config_data.get('description', '')
+                    )
+                    imported_servers[name] = server_config
+                
+                # Save imported servers
+                if self.config_manager.save_server_configs(imported_servers):
+                    success_count = len(imported_servers)
+                else:
+                    success_count = 0
+            
+            # Import theme settings
+            theme_imported = False
+            if 'theme_config' in self.import_data:
+                try:
+                    theme_config = self.import_data['theme_config']
+                    if self.config_manager.save_theme_config(theme_config):
+                        theme_imported = True
+                except Exception:
+                    pass
+            
+            # Show result
+            result_message = f"Import completed!\n\n"
+            if 'servers' in self.import_data:
+                result_message += f"• {success_count} server configurations imported\n"
+            if theme_imported:
+                result_message += f"• Theme settings imported\n"
+            result_message += f"\nPlease restart the application to see all changes."
+            
+            self.result = {'success': True, 'imported_servers': success_count}
+            
+            messagebox.showinfo("Import Complete", result_message)
+            self.dialog.destroy()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to import settings: {str(e)}")
+    
+    def cancel(self) -> None:
+        self.result = None
+        self.dialog.destroy()
     
     def view_on_github(self) -> None:
         """Open GitHub repository in browser."""

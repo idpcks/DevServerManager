@@ -491,7 +491,7 @@ class StatusBarWidget(tk.Frame):
     
     def _setup_ui(self) -> None:
         """Setup status bar UI."""
-        self.pack(fill='x', side='bottom')
+        # Don't pack here - let parent handle placement
         self.pack_propagate(False)
         
         # Status message

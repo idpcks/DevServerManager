@@ -6,6 +6,7 @@
 
 ## 📖 User Guides
 - **[User Guide](docs/USER_GUIDE.md)** - Panduan lengkap penggunaan aplikasi
+- **[Backup & Import Guide](docs/BACKUP_IMPORT_GUIDE.md)** - Panduan backup dan import konfigurasi
 - **[Configuration Guide](docs/CONFIGURATION.md)** - Panduan konfigurasi dan kustomisasi
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Solusi masalah umum
 
