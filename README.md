@@ -45,6 +45,30 @@ python main.py
 4. **Backup**: Export configurations for backup
 5. **Update**: Use live update feature for latest version
 
+## 🔒 Security & Antivirus Notice
+
+### ⚠️ False Positive Detection
+Some antivirus software may flag the executable as suspicious. This is a **known false positive** common with PyInstaller applications.
+
+**Why this happens:**
+- Unsigned executable (no code signing certificate yet)
+- Packed binary format triggers heuristic detection
+- New application without established reputation
+
+**✅ Recommended Safe Installation:**
+```bash
+# Install from source (100% safe)
+git clone https://github.com/idpcks/DevServerManager.git
+cd DevServerManager/runserver
+pip install -r requirements.txt
+python main.py
+```
+
+**🛡️ Verification:**
+- **Open Source**: All code is publicly auditable
+- **No Network Data**: Application doesn't send data to external servers
+- **Local Only**: All operations are performed locally
+
 ## 🔧 Configuration
 
 Server configurations are stored in `config/server_config.json`. The application supports:
