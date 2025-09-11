@@ -533,7 +533,7 @@ class TemplateWizardDialog:
                     template_frame,
                     text=template_config.get('description', ''),
                     font=('Arial', 9),
-                    fg='#bdc3c7',
+                    fg='#ecf0f1',
                     bg='#34495e',
                     wraplength=400,
                     justify=tk.LEFT
@@ -587,7 +587,7 @@ class TemplateWizardDialog:
             port_frame,
             text=port_info,
             font=('Arial', 9),
-            fg='#bdc3c7',
+            fg='#ecf0f1',
             bg='#2c3e50'
         ).pack(anchor=tk.W)
         
@@ -618,7 +618,7 @@ class TemplateWizardDialog:
             command_frame,
             text=command_info,
             font=('Arial', 9),
-            fg='#bdc3c7',
+            fg='#ecf0f1',
             bg='#2c3e50'
         ).pack(anchor=tk.W)
         
@@ -919,7 +919,7 @@ class UpdateDialog:
             text=f"Current Version: {self.current_version}",
             font=("Arial", 10),
             bg='#34495e',
-            fg='#bdc3c7'
+            fg='#ecf0f1'
         )
         current_label.pack(anchor=tk.W, padx=10, pady=(10, 5))
         
@@ -1118,7 +1118,7 @@ class NoUpdateDialog:
             text=f"Current version: {self.current_version}",
             font=("Arial", 12),
             bg='#2c3e50',
-            fg='#bdc3c7'
+            fg='#ecf0f1'
         )
         version_label.pack(pady=(0, 20))
         
