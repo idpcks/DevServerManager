@@ -10,6 +10,8 @@ import webbrowser
 from typing import Optional, Tuple, Dict, List
 from ..services.template_manager import TemplateManager
 from ..services.update_checker import UpdateInfo
+from ..services.download_manager import DownloadManager, DownloadProgress
+from ..services.update_installer import UpdateInstaller
 
 
 class ServerConfigDialog:
@@ -1152,3 +1154,417 @@ class NoUpdateDialog:
             cursor='hand2'
         )
         ok_button.pack()
+
+
+class ProgressDialog:
+    """Dialog for showing download and installation progress."""
+    
+    def __init__(self, parent: tk.Widget, title: str = "Progress"):
+        """Initialize progress dialog.
+        
+        Args:
+            parent: Parent widget
+            title: Dialog title
+        """
+        self.parent = parent
+        self.dialog = None
+        self.progress_var = None
+        self.status_var = None
+        self.speed_var = None
+        self.eta_var = None
+        self.cancel_callback = None
+        
+        self._create_dialog(title)
+    
+    def _create_dialog(self, title: str) -> None:
+        """Create progress dialog."""
+        self.dialog = tk.Toplevel(self.parent)
+        self.dialog.title(title)
+        self.dialog.geometry("500x200")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(False, False)
+        
+        # Make dialog modal
+        self.dialog.transient(self.parent)
+        self.dialog.grab_set()
+        
+        # Center dialog on parent
+        self.dialog.geometry("+%d+%d" % (
+            self.parent.winfo_rootx() + 100,
+            self.parent.winfo_rooty() + 100
+        ))
+        
+        self._setup_ui()
+    
+    def _setup_ui(self) -> None:
+        """Setup progress dialog UI."""
+        # Main frame
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=30, pady=30)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Status label
+        self.status_var = tk.StringVar(value="Preparing...")
+        status_label = tk.Label(
+            main_frame,
+            textvariable=self.status_var,
+            font=("Arial", 12),
+            bg='#2c3e50',
+            fg='#ecf0f1'
+        )
+        status_label.pack(pady=(0, 20))
+        
+        # Progress bar
+        self.progress_var = tk.DoubleVar(value=0.0)
+        progress_bar = ttk.Progressbar(
+            main_frame,
+            variable=self.progress_var,
+            maximum=100.0,
+            length=400,
+            mode='determinate'
+        )
+        progress_bar.pack(pady=(0, 10))
+        
+        # Progress info frame
+        info_frame = tk.Frame(main_frame, bg='#2c3e50')
+        info_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        # Speed info
+        self.speed_var = tk.StringVar(value="")
+        speed_label = tk.Label(
+            info_frame,
+            textvariable=self.speed_var,
+            font=("Arial", 9),
+            bg='#2c3e50',
+            fg='#bdc3c7'
+        )
+        speed_label.pack(side=tk.LEFT)
+        
+        # ETA info
+        self.eta_var = tk.StringVar(value="")
+        eta_label = tk.Label(
+            info_frame,
+            textvariable=self.eta_var,
+            font=("Arial", 9),
+            bg='#2c3e50',
+            fg='#bdc3c7'
+        )
+        eta_label.pack(side=tk.RIGHT)
+        
+        # Buttons frame
+        buttons_frame = tk.Frame(main_frame, bg='#2c3e50')
+        buttons_frame.pack(fill=tk.X)
+        
+        # Cancel button
+        cancel_button = tk.Button(
+            buttons_frame,
+            text="Cancel",
+            font=("Arial", 10),
+            bg='#e74c3c',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=8,
+            command=self._on_cancel,
+            cursor='hand2'
+        )
+        cancel_button.pack(side=tk.RIGHT)
+    
+    def update_progress(self, progress: DownloadProgress) -> None:
+        """Update progress display.
+        
+        Args:
+            progress: DownloadProgress object with progress info
+        """
+        if self.dialog and self.dialog.winfo_exists():
+            self.progress_var.set(progress.percentage)
+            
+            # Update speed display
+            if progress.speed > 0:
+                speed_mb = progress.speed / (1024 * 1024)
+                self.speed_var.set(f"Speed: {speed_mb:.1f} MB/s")
+            else:
+                self.speed_var.set("")
+            
+            # Update ETA display
+            if progress.eta > 0:
+                eta_minutes = progress.eta // 60
+                eta_seconds = progress.eta % 60
+                self.eta_var.set(f"ETA: {eta_minutes:02d}:{eta_seconds:02d}")
+            else:
+                self.eta_var.set("")
+            
+            self.dialog.update_idletasks()
+    
+    def update_status(self, status: str) -> None:
+        """Update status message.
+        
+        Args:
+            status: Status message
+        """
+        if self.dialog and self.dialog.winfo_exists():
+            self.status_var.set(status)
+            self.dialog.update_idletasks()
+    
+    def set_cancel_callback(self, callback: callable) -> None:
+        """Set callback for cancel button.
+        
+        Args:
+            callback: Function to call when cancel is clicked
+        """
+        self.cancel_callback = callback
+    
+    def _on_cancel(self) -> None:
+        """Handle cancel button click."""
+        if self.cancel_callback:
+            self.cancel_callback()
+        self.close()
+    
+    def close(self) -> None:
+        """Close progress dialog."""
+        if self.dialog and self.dialog.winfo_exists():
+            self.dialog.destroy()
+
+
+class LiveUpdateDialog:
+    """Dialog for live update with download and install."""
+    
+    def __init__(self, parent: tk.Widget, update_info: UpdateInfo, current_version: str):
+        """Initialize live update dialog.
+        
+        Args:
+            parent: Parent widget
+            update_info: Update information
+            current_version: Current application version
+        """
+        self.update_info = update_info
+        self.current_version = current_version
+        self.download_manager = DownloadManager()
+        self.update_installer = UpdateInstaller()
+        self.progress_dialog = None
+        
+        # Create dialog window
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Live Update Available")
+        self.dialog.geometry("600x500")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(True, True)
+        
+        # Make dialog modal
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        # Center dialog on parent
+        self.dialog.geometry("+%d+%d" % (
+            parent.winfo_rootx() + 50,
+            parent.winfo_rooty() + 50
+        ))
+        
+        self.setup_dialog_ui()
+    
+    def setup_dialog_ui(self) -> None:
+        """Setup live update dialog UI."""
+        # Main frame
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Title
+        title_frame = tk.Frame(main_frame, bg='#2c3e50')
+        title_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        # Update icon
+        update_icon = tk.Label(
+            title_frame,
+            text="🔄",
+            font=("Arial", 24),
+            bg='#2c3e50',
+            fg='#3498db'
+        )
+        update_icon.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Title text
+        title_text = tk.Label(
+            title_frame,
+            text="Live Update Available!",
+            font=("Arial", 18, "bold"),
+            bg='#2c3e50',
+            fg='#ecf0f1'
+        )
+        title_text.pack(side=tk.LEFT)
+        
+        # Version info frame
+        version_frame = tk.Frame(main_frame, bg='#34495e', relief=tk.RAISED, bd=1)
+        version_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        # Current version
+        current_label = tk.Label(
+            version_frame,
+            text=f"Current Version: {self.current_version}",
+            font=("Arial", 10),
+            bg='#34495e',
+            fg='#ecf0f1'
+        )
+        current_label.pack(anchor=tk.W, padx=10, pady=(10, 5))
+        
+        # New version
+        new_label = tk.Label(
+            version_frame,
+            text=f"New Version: {self.update_info.version}",
+            font=("Arial", 12, "bold"),
+            bg='#34495e',
+            fg='#2ecc71'
+        )
+        new_label.pack(anchor=tk.W, padx=10, pady=(0, 10))
+        
+        # Features frame
+        features_frame = tk.Frame(main_frame, bg='#2c3e50')
+        features_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        features_label = tk.Label(
+            features_frame,
+            text="✨ Live Update Features:",
+            font=("Arial", 12, "bold"),
+            bg='#2c3e50',
+            fg='#f39c12'
+        )
+        features_label.pack(anchor=tk.W, pady=(0, 10))
+        
+        features_list = [
+            "• Automatic download with progress tracking",
+            "• Background installation process",
+            "• Automatic application restart",
+            "• Backup and rollback capability",
+            "• File integrity verification"
+        ]
+        
+        for feature in features_list:
+            feature_label = tk.Label(
+                features_frame,
+                text=feature,
+                font=("Arial", 10),
+                bg='#2c3e50',
+                fg='#ecf0f1'
+            )
+            feature_label.pack(anchor=tk.W, pady=2)
+        
+        # Buttons frame
+        buttons_frame = tk.Frame(main_frame, bg='#2c3e50')
+        buttons_frame.pack(fill=tk.X, pady=(20, 0))
+        
+        # Live Update button
+        live_update_button = tk.Button(
+            buttons_frame,
+            text="🚀 Live Update Now",
+            font=("Arial", 11, "bold"),
+            bg='#27ae60',
+            fg='white',
+            relief=tk.FLAT,
+            padx=25,
+            pady=12,
+            command=self.start_live_update,
+            cursor='hand2'
+        )
+        live_update_button.pack(side=tk.RIGHT, padx=(10, 0))
+        
+        # Manual Download button
+        manual_button = tk.Button(
+            buttons_frame,
+            text="Manual Download",
+            font=("Arial", 10),
+            bg='#34495e',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=10,
+            command=self.manual_download,
+            cursor='hand2'
+        )
+        manual_button.pack(side=tk.RIGHT, padx=(10, 0))
+        
+        # Later button
+        later_button = tk.Button(
+            buttons_frame,
+            text="Later",
+            font=("Arial", 10),
+            bg='#7f8c8d',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=10,
+            command=self.dialog.destroy,
+            cursor='hand2'
+        )
+        later_button.pack(side=tk.LEFT)
+    
+    def start_live_update(self) -> None:
+        """Start live update process."""
+        try:
+            # Create progress dialog
+            self.progress_dialog = ProgressDialog(self.dialog, "Live Update Progress")
+            self.progress_dialog.set_cancel_callback(self.cancel_update)
+            
+            # Start download
+            self.download_manager.download_file(
+                url=self.update_info.download_url,
+                progress_callback=self.on_download_progress,
+                completion_callback=self.on_download_complete
+            )
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to start live update: {e}")
+    
+    def on_download_progress(self, progress: DownloadProgress) -> None:
+        """Handle download progress updates."""
+        if self.progress_dialog:
+            self.progress_dialog.update_progress(progress)
+            self.progress_dialog.update_status(f"Downloading update... {progress.percentage:.1f}%")
+    
+    def on_download_complete(self, filepath: str, success: bool) -> None:
+        """Handle download completion."""
+        if not success:
+            if self.progress_dialog:
+                self.progress_dialog.close()
+            messagebox.showerror("Error", "Download failed!")
+            return
+        
+        # Start installation
+        if self.progress_dialog:
+            self.progress_dialog.update_status("Installing update...")
+            self.progress_dialog.update_progress(DownloadProgress(percentage=50.0))
+        
+        self.update_installer.install_update(
+            new_exe_path=filepath,
+            progress_callback=self.on_install_progress,
+            completion_callback=self.on_install_complete
+        )
+    
+    def on_install_progress(self, message: str, percentage: int) -> None:
+        """Handle installation progress updates."""
+        if self.progress_dialog:
+            self.progress_dialog.update_status(message)
+            self.progress_dialog.update_progress(DownloadProgress(percentage=float(percentage)))
+    
+    def on_install_complete(self, success: bool, message: str) -> None:
+        """Handle installation completion."""
+        if self.progress_dialog:
+            self.progress_dialog.close()
+        
+        if success:
+            messagebox.showinfo("Success", message)
+            self.dialog.destroy()
+        else:
+            messagebox.showerror("Error", message)
+    
+    def cancel_update(self) -> None:
+        """Cancel update process."""
+        self.download_manager.cancel_download()
+        if self.progress_dialog:
+            self.progress_dialog.close()
+        messagebox.showinfo("Cancelled", "Update cancelled by user")
+    
+    def manual_download(self) -> None:
+        """Open manual download in browser."""
+        try:
+            webbrowser.open(self.update_info.download_url)
+            self.dialog.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open download URL: {e}")

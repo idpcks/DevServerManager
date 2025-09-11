@@ -27,7 +27,7 @@ except ImportError as e:
 from ..services.server_manager import ServerManagerService
 from ..services.config_manager import ConfigManager
 from ..services.update_checker import UpdateCheckerService
-from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog
+from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog, LiveUpdateDialog
 from utils.theme_manager import theme_manager
 from utils.logger import app_logger
 
@@ -264,6 +264,9 @@ class MainWindow:
         
         # Check for Updates
         help_menu.add_command(label="Check for Updates", command=self._check_for_updates)
+        
+        # Live Update
+        help_menu.add_command(label="🚀 Live Update", command=self._check_live_update)
         help_menu.add_separator()
         
         # About
@@ -1253,6 +1256,43 @@ class MainWindow:
             app_logger.error(f"Error checking for updates: {e}")
             self.log_message(f"Error checking for updates: {e}", "ERROR")
     
+    def _check_live_update(self) -> None:
+        """Check for live update (force check with live update dialog)."""
+        try:
+            app_logger.info("Live update check requested")
+            
+            # Show loading message
+            self.log_message("Checking for live update...", "INFO")
+            
+            # Force check for updates and show live update dialog
+            self.update_checker.check_for_updates_async(self._on_live_update_check_result)
+            
+        except Exception as e:
+            app_logger.error(f"Error checking for live update: {e}")
+            self.log_message(f"Error checking for live update: {e}", "ERROR")
+    
+    def _on_live_update_check_result(self, update_info) -> None:
+        """Handle live update check result.
+        
+        Args:
+            update_info: UpdateInfo object if update available, None otherwise
+        """
+        try:
+            if update_info:
+                # Update available - show live update dialog
+                self.log_message(f"Live update available: {update_info.version}", "INFO")
+                LiveUpdateDialog(self.root, update_info, self.update_checker.get_current_version())
+            else:
+                # No update available - show info dialog
+                self.log_message("You're up to date! No live update needed.", "SUCCESS")
+                from tkinter import messagebox
+                messagebox.showinfo("Live Update", 
+                    f"Your application is up to date!\n\nCurrent Version: {self.update_checker.get_current_version()}\n\nNo live update is needed at this time.")
+                
+        except Exception as e:
+            app_logger.error(f"Error handling live update check result: {e}")
+            self.log_message(f"Error handling live update result: {e}", "ERROR")
+    
     def _on_update_check_result(self, update_info) -> None:
         """Handle update check result.
         
@@ -1261,9 +1301,9 @@ class MainWindow:
         """
         try:
             if update_info:
-                # Update available
+                # Update available - show live update dialog
                 self.log_message(f"Update available: {update_info.version}", "INFO")
-                UpdateDialog(self.root, update_info, self.update_checker.get_current_version())
+                LiveUpdateDialog(self.root, update_info, self.update_checker.get_current_version())
             else:
                 # No update available
                 self.log_message("You're up to date!", "SUCCESS")
