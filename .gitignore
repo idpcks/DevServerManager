@@ -195,3 +195,24 @@ dist/
 *.pkg
 *.deb
 *.rpm
+
+# Main Branch Clean Structure - Development files (keep in dev branch only)
+build_executable.py
+prepare_release.py
+backup_config.py
+create_release.bat
+launch_gui.bat
+*.zip
+release/
+release-*/
+docs/
+RELEASE_*.md
+GITHUB_*.md
+CLEAN_*.md
+UPGRADE_*.md
+.pylintrc
+scripts/
+.github/
+runserver/
+preview/
+erver
