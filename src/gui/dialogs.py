@@ -4,10 +4,12 @@ This module contains dialog classes for various user interactions.
 """
 
 import tkinter as tk
-from tkinter import messagebox, filedialog, ttk
+from tkinter import messagebox, filedialog, ttk, scrolledtext
 import os
+import webbrowser
 from typing import Optional, Tuple, Dict, List
 from ..services.template_manager import TemplateManager
+from ..services.update_checker import UpdateInfo
 
 
 class ServerConfigDialog:
@@ -839,3 +841,298 @@ class TemplateWizardDialog:
         """Cancel wizard."""
         self.result = None
         self.dialog.destroy()
+
+
+class UpdateDialog:
+    """Dialog for displaying update information."""
+    
+    def __init__(self, parent: tk.Widget, update_info: UpdateInfo, current_version: str):
+        """Initialize update dialog.
+        
+        Args:
+            parent: Parent widget
+            update_info: Update information
+            current_version: Current application version
+        """
+        self.update_info = update_info
+        self.current_version = current_version
+        
+        # Create dialog window
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Update Available")
+        self.dialog.geometry("600x500")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(True, True)
+        
+        # Make dialog modal
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        # Center dialog on parent
+        self.dialog.geometry("+%d+%d" % (
+            parent.winfo_rootx() + 50,
+            parent.winfo_rooty() + 50
+        ))
+        
+        self.setup_dialog_ui()
+        
+        # Wait for dialog to close
+        self.dialog.wait_window()
+    
+    def setup_dialog_ui(self) -> None:
+        """Setup dialog UI components."""
+        # Main frame
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=20, pady=20)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Title
+        title_frame = tk.Frame(main_frame, bg='#2c3e50')
+        title_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        # Update icon (using text for now)
+        update_icon = tk.Label(
+            title_frame,
+            text="🔄",
+            font=("Arial", 24),
+            bg='#2c3e50',
+            fg='#3498db'
+        )
+        update_icon.pack(side=tk.LEFT, padx=(0, 10))
+        
+        # Title text
+        title_text = tk.Label(
+            title_frame,
+            text="Update Available!",
+            font=("Arial", 18, "bold"),
+            bg='#2c3e50',
+            fg='#ecf0f1'
+        )
+        title_text.pack(side=tk.LEFT)
+        
+        # Version info frame
+        version_frame = tk.Frame(main_frame, bg='#34495e', relief=tk.RAISED, bd=1)
+        version_frame.pack(fill=tk.X, pady=(0, 20))
+        
+        # Current version
+        current_label = tk.Label(
+            version_frame,
+            text=f"Current Version: {self.current_version}",
+            font=("Arial", 10),
+            bg='#34495e',
+            fg='#bdc3c7'
+        )
+        current_label.pack(anchor=tk.W, padx=10, pady=(10, 5))
+        
+        # New version
+        new_label = tk.Label(
+            version_frame,
+            text=f"New Version: {self.update_info.version}",
+            font=("Arial", 12, "bold"),
+            bg='#34495e',
+            fg='#2ecc71'
+        )
+        new_label.pack(anchor=tk.W, padx=10, pady=(0, 10))
+        
+        # Release notes frame
+        notes_frame = tk.Frame(main_frame, bg='#2c3e50')
+        notes_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 20))
+        
+        # Release notes label
+        notes_label = tk.Label(
+            notes_frame,
+            text="Release Notes:",
+            font=("Arial", 12, "bold"),
+            bg='#2c3e50',
+            fg='#ecf0f1'
+        )
+        notes_label.pack(anchor=tk.W, pady=(0, 10))
+        
+        # Release notes text
+        notes_text = scrolledtext.ScrolledText(
+            notes_frame,
+            wrap=tk.WORD,
+            width=60,
+            height=15,
+            font=("Consolas", 9),
+            bg='#34495e',
+            fg='#ecf0f1',
+            insertbackground='#ecf0f1',
+            selectbackground='#3498db',
+            state=tk.DISABLED
+        )
+        notes_text.pack(fill=tk.BOTH, expand=True)
+        
+        # Insert release notes
+        notes_text.config(state=tk.NORMAL)
+        notes_text.insert(tk.END, self.update_info.release_notes or "No release notes available.")
+        notes_text.config(state=tk.DISABLED)
+        
+        # Published date
+        if self.update_info.published_at:
+            try:
+                from datetime import datetime
+                published_date = datetime.fromisoformat(
+                    self.update_info.published_at.replace('Z', '+00:00')
+                ).strftime('%B %d, %Y')
+                
+                date_label = tk.Label(
+                    notes_frame,
+                    text=f"Published: {published_date}",
+                    font=("Arial", 9),
+                    bg='#2c3e50',
+                    fg='#95a5a6'
+                )
+                date_label.pack(anchor=tk.W, pady=(10, 0))
+            except:
+                pass
+        
+        # Buttons frame
+        buttons_frame = tk.Frame(main_frame, bg='#2c3e50')
+        buttons_frame.pack(fill=tk.X, pady=(20, 0))
+        
+        # Download button
+        download_button = tk.Button(
+            buttons_frame,
+            text="Download Update",
+            font=("Arial", 10, "bold"),
+            bg='#27ae60',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=10,
+            command=self.download_update,
+            cursor='hand2'
+        )
+        download_button.pack(side=tk.RIGHT, padx=(10, 0))
+        
+        # View on GitHub button
+        github_button = tk.Button(
+            buttons_frame,
+            text="View on GitHub",
+            font=("Arial", 10),
+            bg='#34495e',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=10,
+            command=self.view_on_github,
+            cursor='hand2'
+        )
+        github_button.pack(side=tk.RIGHT, padx=(10, 0))
+        
+        # Later button
+        later_button = tk.Button(
+            buttons_frame,
+            text="Later",
+            font=("Arial", 10),
+            bg='#7f8c8d',
+            fg='white',
+            relief=tk.FLAT,
+            padx=20,
+            pady=10,
+            command=self.dialog.destroy,
+            cursor='hand2'
+        )
+        later_button.pack(side=tk.LEFT)
+    
+    def download_update(self) -> None:
+        """Open download URL in browser."""
+        try:
+            webbrowser.open(self.update_info.download_url)
+            self.dialog.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open download URL: {e}")
+    
+    def view_on_github(self) -> None:
+        """Open GitHub repository in browser."""
+        try:
+            github_url = f"https://github.com/idpcks/DevServerManager/releases/tag/{self.update_info.version}"
+            webbrowser.open(github_url)
+        except Exception as e:
+            messagebox.showerror("Error", f"Could not open GitHub: {e}")
+
+
+class NoUpdateDialog:
+    """Dialog for when no update is available."""
+    
+    def __init__(self, parent: tk.Widget, current_version: str):
+        """Initialize no update dialog.
+        
+        Args:
+            parent: Parent widget
+            current_version: Current application version
+        """
+        self.current_version = current_version
+        
+        # Create dialog window
+        self.dialog = tk.Toplevel(parent)
+        self.dialog.title("Check for Updates")
+        self.dialog.geometry("400x200")
+        self.dialog.configure(bg='#2c3e50')
+        self.dialog.resizable(False, False)
+        
+        # Make dialog modal
+        self.dialog.transient(parent)
+        self.dialog.grab_set()
+        
+        # Center dialog on parent
+        self.dialog.geometry("+%d+%d" % (
+            parent.winfo_rootx() + 100,
+            parent.winfo_rooty() + 100
+        ))
+        
+        self.setup_dialog_ui()
+        
+        # Wait for dialog to close
+        self.dialog.wait_window()
+    
+    def setup_dialog_ui(self) -> None:
+        """Setup dialog UI components."""
+        # Main frame
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=30, pady=30)
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Icon
+        icon_label = tk.Label(
+            main_frame,
+            text="✅",
+            font=("Arial", 32),
+            bg='#2c3e50',
+            fg='#2ecc71'
+        )
+        icon_label.pack(pady=(0, 20))
+        
+        # Title
+        title_label = tk.Label(
+            main_frame,
+            text="You're up to date!",
+            font=("Arial", 16, "bold"),
+            bg='#2c3e50',
+            fg='#ecf0f1'
+        )
+        title_label.pack(pady=(0, 10))
+        
+        # Version info
+        version_label = tk.Label(
+            main_frame,
+            text=f"Current version: {self.current_version}",
+            font=("Arial", 12),
+            bg='#2c3e50',
+            fg='#bdc3c7'
+        )
+        version_label.pack(pady=(0, 20))
+        
+        # OK button
+        ok_button = tk.Button(
+            main_frame,
+            text="OK",
+            font=("Arial", 10, "bold"),
+            bg='#3498db',
+            fg='white',
+            relief=tk.FLAT,
+            padx=30,
+            pady=10,
+            command=self.dialog.destroy,
+            cursor='hand2'
+        )
+        ok_button.pack()

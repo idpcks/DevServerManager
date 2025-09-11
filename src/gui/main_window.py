@@ -12,16 +12,22 @@ from typing import Dict, Any, Optional, Callable
 import os
 
 try:
-    import pystray
-    from PIL import Image, ImageDraw
+    import pystray  # type: ignore
+    from PIL import Image, ImageDraw  # type: ignore
     TRAY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
     TRAY_AVAILABLE = False
-    app_logger.warning("pystray or PIL not available. System tray functionality disabled.")
+    # Only show warning if logger is available
+    try:
+        from utils.logger import app_logger
+        app_logger.warning(f"pystray or PIL not available: {e}. System tray functionality disabled.")
+    except ImportError:
+        pass  # Silent fallback if logger not available
 
 from ..services.server_manager import ServerManagerService
 from ..services.config_manager import ConfigManager
-from .dialogs import ServerConfigDialog, TemplateWizardDialog
+from ..services.update_checker import UpdateCheckerService
+from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog
 from utils.theme_manager import theme_manager
 from utils.logger import app_logger
 
@@ -38,6 +44,7 @@ class MainWindow:
         self.root = root
         self.server_manager = ServerManagerService()
         self.config_manager = ConfigManager()
+        self.update_checker = UpdateCheckerService()
         
         # Queue for thread communication
         self.log_queue = queue.Queue()
@@ -178,16 +185,19 @@ class MainWindow:
         """Setup the main user interface with responsive grid layout."""
         try:
             # Configure root grid
-            self.root.grid_rowconfigure(1, weight=1)
-            self.root.grid_rowconfigure(2, weight=0)
+            self.root.grid_rowconfigure(2, weight=1)
+            self.root.grid_rowconfigure(3, weight=0)
             self.root.grid_columnconfigure(0, weight=1)
+            
+            # Menu bar
+            self._setup_menu_bar()
             
             # Main title
             self._setup_title_bar()
             
             # Main container with grid
             main_frame = tk.Frame(self.root, bg='#2c3e50')
-            main_frame.grid(row=1, column=0, sticky='nsew', padx=10, pady=5)
+            main_frame.grid(row=2, column=0, sticky='nsew', padx=10, pady=5)
             
             # Configure main_frame grid
             main_frame.grid_rowconfigure(0, weight=1)
@@ -214,7 +224,7 @@ class MainWindow:
         colors = theme_manager.get_current_colors()
         
         self.title_frame = tk.Frame(self.root, bg=colors['frame_bg'])
-        self.title_frame.grid(row=0, column=0, sticky='ew', padx=10, pady=5)
+        self.title_frame.grid(row=1, column=0, sticky='ew', padx=10, pady=5)
         
         # Title and theme switcher container
         self.title_container = tk.Frame(self.title_frame, bg=colors['frame_bg'])
@@ -239,6 +249,25 @@ class MainWindow:
                                       state="readonly", width=10)
         self.theme_combo.pack(side='left')
         self.theme_combo.bind('<<ComboboxSelected>>', self._on_theme_change)
+    
+    def _setup_menu_bar(self) -> None:
+        """Setup menu bar with Help menu."""
+        colors = theme_manager.get_current_colors()
+        
+        # Create menu bar
+        self.menubar = tk.Menu(self.root, bg=colors['frame_bg'], fg=colors['fg'])
+        self.root.config(menu=self.menubar)
+        
+        # Help menu
+        help_menu = tk.Menu(self.menubar, tearoff=0, bg=colors['frame_bg'], fg=colors['fg'])
+        self.menubar.add_cascade(label="Help", menu=help_menu)
+        
+        # Check for Updates
+        help_menu.add_command(label="Check for Updates", command=self._check_for_updates)
+        help_menu.add_separator()
+        
+        # About
+        help_menu.add_command(label="About", command=self._show_about)
     
     def _setup_left_panel(self, parent: tk.Widget) -> None:
         """Setup left panel with server controls."""
@@ -1208,3 +1237,84 @@ class MainWindow:
             threading.Thread(target=run_command, daemon=True).start()
         except Exception as e:
             app_logger.error(f"Error executing custom command: {e}")
+    
+    def _check_for_updates(self) -> None:
+        """Check for application updates."""
+        try:
+            app_logger.info("Manual update check requested")
+            
+            # Show loading message
+            self.log_message("Checking for updates...", "INFO")
+            
+            # Check for updates asynchronously
+            self.update_checker.check_for_updates_async(self._on_update_check_result)
+            
+        except Exception as e:
+            app_logger.error(f"Error checking for updates: {e}")
+            self.log_message(f"Error checking for updates: {e}", "ERROR")
+    
+    def _on_update_check_result(self, update_info) -> None:
+        """Handle update check result.
+        
+        Args:
+            update_info: UpdateInfo object if update available, None otherwise
+        """
+        try:
+            if update_info:
+                # Update available
+                self.log_message(f"Update available: {update_info.version}", "INFO")
+                UpdateDialog(self.root, update_info, self.update_checker.get_current_version())
+            else:
+                # No update available
+                self.log_message("You're up to date!", "SUCCESS")
+                NoUpdateDialog(self.root, self.update_checker.get_current_version())
+                
+        except Exception as e:
+            app_logger.error(f"Error handling update check result: {e}")
+            self.log_message(f"Error handling update result: {e}", "ERROR")
+    
+    def _show_about(self) -> None:
+        """Show about dialog."""
+        try:
+            from tkinter import messagebox
+            
+            about_text = """DevServer Manager v1.0.1
+
+A modern GUI application for managing multiple development servers.
+
+Features:
+• Server Templates for various technologies
+• Auto-detection of project types
+• Real-time server monitoring
+• System tray integration
+• Theme customization
+
+Developed by idpcks
+GitHub: https://github.com/idpcks/DevServerManager"""
+            
+            messagebox.showinfo("About DevServer Manager", about_text)
+            
+        except Exception as e:
+            app_logger.error(f"Error showing about dialog: {e}")
+    
+    def start_auto_update_check(self) -> None:
+        """Start automatic update checking."""
+        try:
+            # Set callback for update notifications
+            self.update_checker.set_update_callback(self._on_update_check_result)
+            
+            # Start auto check
+            self.update_checker.start_auto_check()
+            app_logger.info("Auto-update check started")
+            
+        except Exception as e:
+            app_logger.error(f"Error starting auto-update check: {e}")
+    
+    def stop_auto_update_check(self) -> None:
+        """Stop automatic update checking."""
+        try:
+            self.update_checker.stop_auto_check()
+            app_logger.info("Auto-update check stopped")
+            
+        except Exception as e:
+            app_logger.error(f"Error stopping auto-update check: {e}")

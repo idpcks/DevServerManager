@@ -99,6 +99,9 @@ class DevServerManagerApp:
             if theme_config:
                 self.main_window.apply_theme(theme_config)
             
+            # Start auto-update check
+            self.main_window.start_auto_update_check()
+            
             # Setup window close handler
             self.root.protocol("WM_DELETE_WINDOW", self._on_closing)
             
