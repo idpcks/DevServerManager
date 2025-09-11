@@ -1,4 +1,6 @@
-## [v2.1.0] - 2025-09-11
+## [v2.1.1] - 2025-09-11 - **Current Latest Release**
+
+> **DevServer Manager Version 2.x Series** - Complete application rewrite with modern architecture and enhanced features. This version series represents a major evolution from previous versions.
 
 ### Added
 - New features and improvements
@@ -16,10 +18,14 @@
 
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to DevServer Manager will be documented in this file.
+
+> **Current Major Version: 2.x** - This represents a complete rewrite of the application with modern architecture, enhanced features, and improved user experience. Users should download version 2.x releases for the latest functionality.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
 
 ## [Unreleased]
 
