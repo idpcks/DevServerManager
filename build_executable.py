@@ -119,6 +119,8 @@ def create_release_package():
     files_to_copy = [
         "README.md",
         "requirements.txt",
+        "CHANGELOG.md",
+        "RELEASE_NOTES_v2.1.0.md",
         "config/server_templates.json",
         "config/server_config_example.json"
     ]

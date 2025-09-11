@@ -7,6 +7,8 @@
 ## 📖 User Guides
 - **[User Guide](docs/USER_GUIDE.md)** - Panduan lengkap penggunaan aplikasi
 - **[Backup & Import Guide](docs/BACKUP_IMPORT_GUIDE.md)** - Panduan backup dan import konfigurasi
+- **[Live Update Guide](docs/LIVE_UPDATE_README.md)** - Panduan singkat live update untuk user
+- **[Live Update Technical](docs/LIVE_UPDATE.md)** - Dokumentasi teknis live update
 - **[Configuration Guide](docs/CONFIGURATION.md)** - Panduan konfigurasi dan kustomisasi
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Solusi masalah umum
 

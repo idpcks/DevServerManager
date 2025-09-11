@@ -1,4 +1,4 @@
-# DevServer Manager v1.0.1 - Panduan Penggunaan
+# DevServer Manager v2.1.0 - Panduan Penggunaan
 
 ## 🔒 Keamanan Terjamin
 - **VirusTotal Status**: ✅ CLEAN - Tidak ada ancaman terdeteksi
@@ -23,5 +23,5 @@
 - Windows 10/11
 - .NET Framework (biasanya sudah terinstall)
 
-## Versi 1.0.1
+## Versi 2.1.0
 Lihat CHANGELOG.md untuk detail perubahan versi ini.

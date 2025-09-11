@@ -1,6 +1,6 @@
-# 🚀 DevServer Manager - Modern Development Server Management
+# 🚀 DevServer Manager
 
-A modern, modular GUI application for managing multiple development servers with clean architecture and robust functionality. This application replaces traditional batch scripts with an intuitive interface and advanced features.
+Aplikasi GUI modern untuk mengelola multiple development servers dengan arsitektur yang bersih dan fitur yang robust. Menggantikan batch script tradisional dengan interface yang intuitif dan fitur canggih.
 
 [![VirusTotal](https://img.shields.io/badge/VirusTotal-CLEAN-green?style=for-the-badge&logo=virustotal&logoColor=white)](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
 [![Security](https://img.shields.io/badge/Security-EXCELLENT-green?style=for-the-badge&logo=security&logoColor=white)](https://github.com/idpcks/DevServerManager)
@@ -8,428 +8,104 @@ A modern, modular GUI application for managing multiple development servers with
 
 ![DevServer Manager Preview](preview/preview_app.png)
 
-## ✨ Key Features
+## ✨ Fitur Utama
 
-### 🏗️ Core Architecture
-- **Modular Design**: Clean separation of concerns with service layers, models, and GUI components
-- **Modern GUI**: User-friendly interface with customizable themes and responsive design
-- **Multi-threading**: Non-blocking UI with proper thread management
-- **Extensible Design**: Base classes and interfaces for easy feature extension
+- **🎯 Server Management**: Kelola multiple development servers dengan mudah
+- **📋 Server Templates**: Template siap pakai untuk Laravel, Node.js, Python, Go, .NET, dll
+- **🔍 Auto-Detection**: Deteksi otomatis jenis project berdasarkan file markers
+- **🚦 Real-time Monitoring**: Monitoring status server secara real-time
+- **💻 Custom Commands**: Eksekusi command custom dengan output real-time
+- **🔔 System Tray**: Minimize ke system tray dengan quick access
+- **🎨 Theme Customization**: Interface yang dapat dikustomisasi
+- **💾 Backup & Import**: Export/import konfigurasi server untuk migrasi dan sharing
+- **🔄 Live Updates**: Auto-update system dengan backup otomatis
 
-### 🎯 Server Management
-- **📋 Server Templates**: Pre-configured templates for Laravel, Node.js, Python, Go, .NET, and more
-- **🔍 Auto-Detection**: Automatic project type detection based on file markers (package.json, composer.json, requirements.txt, etc.)
-- **🚦 Process Monitoring**: Real-time server status and resource monitoring
-- **⚙️ Environment Variables**: Support for environment-specific configurations
-- **🛡️ Graceful Shutdown**: Safe server termination with confirmation dialogs
+## 🚀 Quick Start
 
-### 📊 Advanced Features
-- **📋 Real-time Logging**: Advanced logging system with color coding, file output, and log rotation
-- **💻 Command Execution**: Execute custom commands with real-time output capture
-- **📁 Smart Configuration**: Robust configuration management with backup and validation
-- **🛡️ Error Handling**: Comprehensive error handling with proper logging and user feedback
-- **⚙️ Auto-save Configuration**: Automatic configuration persistence with backup support
-- **🔔 System Tray**: Minimize to system tray with quick access controls
-
-## 🖥️ Fitur Interface
-
-### 🎛️ Server Controls
-- Start/Stop individual servers dengan satu klik
-- Start/Stop all servers sekaligus dengan delay otomatis
-- Real-time status indicator dengan color coding
-- Port dan path information yang dapat diedit
-- Template selection untuk setup server baru
-- Environment variables configuration
-
-### 📊 Log Terminal
-- Color-coded log messages (INFO, ERROR, WARNING, SUCCESS)
-- Timestamp untuk setiap log entry
-- Auto-scroll ke log terbaru
-- Clear log functionality
-- Export log ke file
-
-### ⚡ Advanced Features
-- Execute command apapun langsung dari GUI
-- Output ditampilkan di log terminal
-- Support untuk command dengan timeout
-- System tray integration
-- Confirmation dialog saat menutup aplikasi dengan server aktif
-- Auto-detection project type saat menambah server baru
-
-## 🚀 Cara Penggunaan
-
-### 1. Menjalankan Aplikasi
+### 1. Download & Install
 ```bash
-python main.py
+# Download dari GitHub Releases
+# Extract dan jalankan DevServerManager.exe
 ```
 
-Atau gunakan batch file:
-```bash
-launch_gui.bat
-```
-
-### 2. Setup Server Baru
-#### 🎯 Menggunakan Template (Recommended)
-1. Klik tombol "➕ Add Server"
-2. Pilih template yang sesuai (Laravel, Node.js, Python, Go, .NET, dll)
+### 2. Setup Server
+1. Klik "➕ Add Server"
+2. Pilih template (Laravel, Node.js, Python, dll)
 3. Pilih folder project
-4. Aplikasi akan otomatis mendeteksi konfigurasi yang diperlukan
-5. Sesuaikan port dan environment variables jika diperlukan
+4. Aplikasi akan auto-detect konfigurasi
 
-#### 📁 Manual Configuration
-1. Klik tombol "➕ Add Server"
-2. Pilih "Custom" template
-3. Atur nama, path, port, dan command secara manual
-4. Simpan konfigurasi
+### 3. Manage Servers
+- **Start**: Klik "▶️ Start" untuk server individual
+- **Start All**: Klik "🚀 Start All Servers" untuk semua server
+- **Stop**: Klik "⏹️ Stop" untuk menghentikan server
 
-### 3. Mengelola Server
-#### 🚀 Menjalankan Server
-- **Individual**: Klik tombol "▶️ Start" pada server yang diinginkan
-- **Semua**: Klik "🚀 Start All Servers" untuk menjalankan semua server dengan delay otomatis
+## 📋 System Requirements
 
-#### 🛑 Menghentikan Server
-- **Individual**: Klik tombol "⏹️ Stop" pada server yang berjalan
-- **Semua**: Klik "🛑 Stop All Servers" untuk menghentikan semua server
-- **Graceful Shutdown**: Dialog konfirmasi akan muncul saat menutup aplikasi dengan server aktif
+- **OS**: Windows 10/11 (64-bit)
+- **RAM**: Minimum 4GB
+- **Storage**: 100MB free space
+- **Network**: Internet connection (untuk server management)
 
-#### ⚙️ Mengubah Konfigurasi
-- Klik tombol "⚙️ Edit" untuk mengubah konfigurasi server
-- Klik tombol "📁" untuk mengubah path server
-- Konfigurasi akan otomatis tersimpan
+## 📦 Download
 
-### 4. Fitur Lanjutan
-#### 💻 Custom Command Execution
-- Ketik command di field "Custom Command"
-- Tekan Enter atau klik "Execute"
-- Output akan ditampilkan di log terminal dengan real-time
+### Untuk Pengguna
+- **Download**: [GitHub Releases](https://github.com/idpcks/DevServerManager/releases)
+- **Installation**: Extract dan jalankan `DevServerManager.exe`
+- **No Setup**: Tidak perlu install Python atau dependencies
 
-#### 🔔 System Tray
-- Minimize aplikasi ke system tray
-- Quick access untuk start/stop servers
-- Notifikasi status server
-
-## 📦 Distribusi Aplikasi
-
-### Untuk Pengguna Akhir
-Aplikasi ini dapat didistribusikan sebagai executable standalone tanpa perlu instalasi Python:
-
-1. **Build Executable**
-   ```bash
-   python build_executable.py
-   ```
-
-2. **File Output**
-   - `dist/DevServerManager.exe` - Executable utama
-   - `release/` - Package lengkap untuk distribusi
-
-3. **GitHub Releases**
-   - Upload file dari folder `release/` ke GitHub Releases
-   - User dapat download dan langsung menjalankan
-   - Tidak perlu akses ke source code
-
-### Keuntungan Distribusi Executable
-- ✅ User tidak perlu install Python
-- ✅ Tidak ada akses ke source code development
-- ✅ Professional distribution method
-- ✅ Easy installation untuk non-technical users
-
-Lihat [DISTRIBUTION_GUIDE.md](DISTRIBUTION_GUIDE.md) untuk panduan lengkap.
-
-## 🔧 Konfigurasi
-
-### 📁 Struktur File
-```
-runserver/
-├── config/
-│   ├── server_config.json          # Konfigurasi server aktif
-│   ├── server_config_example.json   # Template konfigurasi
-│   ├── server_templates.json        # Template untuk berbagai teknologi
-│   └── theme_config.json           # Konfigurasi tema UI
-├── src/
-│   ├── gui/                        # Komponen GUI
-│   ├── models/                     # Data models
-│   └── services/                   # Business logic
-├── utils/                          # Utility functions
-├── assets/                         # Assets (logo, icons)
-└── logs/                          # Log files
-```
-
-### 🎯 Server Templates
-Aplikasi menyediakan template untuk berbagai teknologi:
-
-#### Laravel/PHP
-```json
-{
-  "name": "Laravel Project",
-  "command": "php artisan serve --port={port}",
-  "default_port": 8000,
-  "file_markers": ["artisan", "composer.json"],
-  "env_vars": {
-    "APP_ENV": "local",
-    "APP_DEBUG": "true"
-  }
-}
-```
-
-#### Node.js
-```json
-{
-  "name": "Node.js Project",
-  "command": "npm run dev",
-  "default_port": 3000,
-  "file_markers": ["package.json", "node_modules"],
-  "env_vars": {
-    "NODE_ENV": "development",
-    "PORT": "{port}"
-  }
-}
-```
-
-#### Python
-```json
-{
-  "name": "Python Project",
-  "command": "python manage.py runserver {port}",
-  "default_port": 8000,
-  "file_markers": ["manage.py", "requirements.txt"],
-  "env_vars": {
-    "DJANGO_SETTINGS_MODULE": "settings.local"
-  }
- }
-
-## 🛡️ Error Handling & Safety
-
-Aplikasi dilengkapi dengan comprehensive error handling:
-- **🔍 Path Validation**: Cek keberadaan direktori dan file markers sebelum menjalankan server
-- **🔄 Process Management**: Handle process termination dengan graceful shutdown
-- **⏱️ Command Timeout**: Timeout yang dapat dikonfigurasi untuk custom commands
-- **🧵 Thread Safety**: Queue-based logging untuk thread safety
-- **🛡️ Exception Handling**: Try-catch di semua operasi critical
-- **💾 Auto-backup**: Backup otomatis konfigurasi sebelum perubahan
-- **⚠️ Confirmation Dialogs**: Dialog konfirmasi untuk operasi berbahaya
-- **📊 Health Monitoring**: Monitoring status server secara real-time
-
-## 🎨 Customization
-
-### 🎯 Menambah Template Baru
-Edit file `config/server_templates.json`:
-```json
-{
-  "My Custom Framework": {
-    "name": "My Custom Framework",
-    "command": "my-framework serve --port={port}",
-    "default_port": 4000,
-    "file_markers": ["my-config.json", "src/"],
-    "env_vars": {
-      "ENVIRONMENT": "development"
-    },
-    "description": "Template for My Custom Framework"
-  }
-}
-```
-
-### 🎨 Mengubah Theme
-Edit file `config/theme_config.json` untuk mengubah warna dan font:
-```json
-{
-  "colors": {
-    "primary": "#2196F3",
-    "success": "#4CAF50",
-    "warning": "#FF9800",
-    "error": "#F44336"
-  },
-  "fonts": {
-    "default": "Segoe UI",
-    "monospace": "Consolas"
-  }
-}
-```
-
-## 📋 Requirements
-
-### 🐍 Python Dependencies
-- Python 3.8+ (recommended)
-- Tkinter (biasanya sudah include di Python)
-- Pillow (PIL) untuk image processing
-- psutil untuk process monitoring
-
-### 💻 System Requirements
-- Windows 10/11 (primary support)
-- macOS dan Linux (experimental support)
-- Minimum 4GB RAM
-- 100MB disk space
-
-### 📦 Installation
-
-#### Untuk Pengguna Akhir (Recommended)
-1. **Download Release**
-   - Kunjungi halaman [Releases](../../releases)
-   - Download file `DevServerManager-vX.X.X-Windows.zip`
-   - Extract dan jalankan `DevServerManager.exe`
-
-#### Untuk Developer
+### Untuk Developer
 ```bash
-# Clone repository
 git clone <repository-url>
 cd runserver
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Run application
 python main.py
-
-# Build executable (opsional)
-python build_executable.py
 ```
 
-## 🔄 Migration Guide
+## 📚 Dokumentasi Lengkap
 
-### Dari runserver.bat Legacy
-1. Backup file `runserver.bat` lama
-2. Jalankan `python main.py`
-3. Gunakan "➕ Add Server" untuk menambah server dengan template
-4. Import konfigurasi lama jika diperlukan
-5. Gunakan "🚀 Start All Servers" untuk menjalankan semua server
-
-### Dari Versi Lama DevServer Manager
-1. Backup folder `config/`
-2. Update ke versi terbaru
-3. Jalankan aplikasi - konfigurasi akan otomatis di-migrate
-4. Verifikasi semua server berfungsi dengan baik
-
-## 🐛 Troubleshooting
-
-### 🚫 Server Tidak Bisa Start
-- **Path Issues**: Pastikan path server benar dan folder exists
-- **Port Conflict**: Cek apakah port sudah digunakan aplikasi lain dengan `netstat -an`
-- **Permission**: Jalankan sebagai administrator jika diperlukan
-- **Dependencies**: Pastikan semua dependencies project terinstall
-- **Logs**: Lihat log terminal dan file `logs/devserver_manager.log` untuk detail error
-
-### ⚡ Command Tidak Berfungsi
-- **Syntax**: Pastikan command valid untuk OS yang digunakan
-- **Timeout**: Sesuaikan timeout di pengaturan jika command butuh waktu lama
-- **Environment**: Cek environment variables sudah benar
-- **Path**: Pastikan executable ada di PATH atau gunakan full path
-
-### 🖥️ GUI Issues
-- **Freeze**: Semua operasi berjalan di background thread, tunggu sebentar
-- **Theme**: Reset theme ke default jika ada masalah tampilan
-- **Memory**: Restart aplikasi jika memory usage tinggi
-- **Display**: Cek scaling display Windows jika UI terlihat aneh
-
-### 🔧 Configuration Issues
-- **Corrupt Config**: Hapus file di `config/` untuk reset ke default
-- **Template Error**: Validasi syntax JSON di file template
-- **Backup**: Gunakan backup otomatis di folder `config/backups/`
-
-## 📝 Log Levels
-
-- **🟢 SUCCESS**: Operasi berhasil (hijau)
-- **ℹ️ INFO**: Informasi umum (biru)
-- **⚠️ WARNING**: Peringatan (kuning)
-- **❌ ERROR**: Error/kesalahan (merah)
-- **🔧 DEBUG**: Debug information (abu-abu)
-
-## 🚀 Changelog
-
-### v2.0.0 (Latest)
-- ✨ **Server Templates**: Pre-configured templates untuk berbagai teknologi
-- 🔍 **Auto-Detection**: Deteksi otomatis jenis project
-- 🛡️ **Graceful Shutdown**: Dialog konfirmasi saat menutup dengan server aktif
-- 🏗️ **Modular Architecture**: Refactor ke arsitektur yang lebih bersih
-- 🔔 **System Tray**: Integration dengan system tray
-- ⚙️ **Environment Variables**: Support untuk environment-specific config
-- 📊 **Enhanced Logging**: Improved logging system dengan file rotation
-- 🎨 **Theme System**: Customizable themes dan UI improvements
-
-### v1.x (Legacy)
-- Basic server management
-- Simple GUI interface
-- Manual configuration
-
-## 🤝 Contributing
-
-We welcome contributions from the community! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on how to contribute.
-
-### Quick Start
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
-3. **Follow** our [Code of Conduct](CODE_OF_CONDUCT.md)
-4. **Read** the [Contributing Guide](CONTRIBUTING.md)
-5. **Submit** a Pull Request
-
-### 🐛 Bug Reports
-1. Check existing issues first
-2. Create a new issue with the provided template
-3. Include log files and screenshots if possible
-
-### 💡 Feature Requests
-1. Discuss in GitHub Discussions first
-2. Create detailed proposals with use cases
-3. Consider backward compatibility
-
-### 🔧 Development
-1. Fork repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Follow coding standards and add tests
-4. Commit changes: `git commit -m 'Add amazing feature'`
-5. Push branch: `git push origin feature/amazing-feature`
-6. Create Pull Request
-
-### 📋 Development Setup
-```bash
-# Setup development environment
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-pip install -r requirements-dev.txt  # Development dependencies
-
-# Run tests
-python -m pytest tests/
-
-# Run with debug mode
-python main.py --debug
-```
+- **[User Guide](docs/USER_GUIDE.md)**: Panduan lengkap penggunaan aplikasi
+- **[Backup & Import Guide](docs/BACKUP_IMPORT_GUIDE.md)**: Panduan backup dan import konfigurasi
+- **[Live Update Guide](docs/LIVE_UPDATE_README.md)**: Panduan fitur live update
+- **[Configuration Guide](docs/CONFIGURATION.md)**: Panduan konfigurasi dan kustomisasi
+- **[Troubleshooting](docs/TROUBLESHOOTING.md)**: Solusi masalah umum
+- **[Developer Guide](docs/DEVELOPER.md)**: Panduan untuk developer
 
 ## 🔒 Security
 
-DevServer Manager has been thoroughly scanned for security threats and is confirmed safe to use.
+- **✅ Virus Scan**: CLEAN - No threats detected (VirusTotal)
+- **✅ Security Rating**: EXCELLENT
+- **✅ Open Source**: Code dapat diaudit oleh komunitas
+- **✅ Local Only**: Tidak ada data yang dikirim ke server eksternal
 
-### Virus Scan Results
-- **VirusTotal Status**: ✅ **CLEAN** - No threats detected
-- **Scan Report**: [View Full Report](https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1)
-- **Detection Engines**: 0/70+ engines detected threats
-- **Security Rating**: ✅ **EXCELLENT**
+Lihat [Security Guide](docs/SECURITY.md) untuk detail lengkap.
 
-For detailed security information, see our [Security Guide](SECURITY.md).
+## 🐛 Troubleshooting
+
+### Masalah Umum
+- **Server tidak start**: Cek path dan port conflict
+- **GUI freeze**: Tunggu operasi selesai atau restart aplikasi
+- **Permission error**: Jalankan sebagai administrator
+
+Lihat [Troubleshooting Guide](docs/TROUBLESHOOTING.md) untuk solusi lengkap.
+
+## 🤝 Contributing
+
+Kontribusi sangat diterima! Lihat [Contributing Guide](CONTRIBUTING.md) untuk detail.
+
+### Quick Start
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Follow [Code of Conduct](CODE_OF_CONDUCT.md)
+4. Submit Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - Lihat [LICENSE](LICENSE) untuk detail.
 
-- **Open Source**: ✅ Yes, fully open source
-- **License**: MIT License
-- **Commercial Use**: ✅ Allowed
-- **Modification**: ✅ Allowed
-- **Distribution**: ✅ Allowed
-- **Private Use**: ✅ Allowed
+## 👨‍💻 Developer
 
-## 🙏 Acknowledgments
-
-### 👨‍💻 Developer
 **DevServer Manager** dikembangkan oleh **idpcks**
-
-Sebuah aplikasi GUI untuk mengelola multiple development servers dengan fitur modern dan user-friendly interface.
-
-### 🤝 Credits
-- Terima kasih kepada semua contributors
-- Inspired by modern development workflows
-- Built with ❤️ untuk developer community
 
 ---
 
-**📞 Support**: Jika mengalami masalah, silakan buat issue di GitHub atau hubungi maintainer.
-
-**⭐ Star**: Jika project ini membantu, jangan lupa berikan star di GitHub!
+**📞 Support**: [GitHub Issues](https://github.com/idpcks/DevServerManager/issues) | **⭐ Star**: Jika membantu, berikan star di GitHub!
