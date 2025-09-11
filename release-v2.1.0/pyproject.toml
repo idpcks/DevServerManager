@@ -1,0 +1,105 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "devserver-manager"
+version = "2.1.0"
+description = "A modern GUI application for managing multiple development servers"
+authors = [
+    {name = "idpcks", email = "idpcks.container103@slmail.me"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Tools",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "psutil>=7.0.0",
+    "watchdog>=6.0.0",
+    "jsonschema>=4.25.0",
+    "requests>=2.32.5",
+    "coloredlogs>=15.0.1",
+    "pillow>=11.3.0",
+    "pystray>=0.19.5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+]
+build = [
+    "pyinstaller>=4.0",
+    "cx-Freeze>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/idpcks/DevServerManager"
+Repository = "https://github.com/idpcks/DevServerManager"
+Issues = "https://github.com/idpcks/DevServerManager/issues"
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pystray.*",
+    "PIL.*",
+    "psutil.*",
+    "watchdog.*",
+    "jsonschema.*",
+    "coloredlogs.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
