@@ -9,6 +9,8 @@ import os
 import hashlib
 import threading
 import time
+import zipfile
+import shutil
 from pathlib import Path
 from typing import Callable, Optional, Dict, Any
 from urllib.parse import urlparse
@@ -131,8 +133,21 @@ class DownloadManager:
                 
                 app_logger.info(f"Download completed: {filepath}")
                 
+                # If it's a ZIP file, extract the executable
+                final_filepath = str(filepath)
+                if str(filepath).endswith('.zip'):
+                    exe_path = self._extract_executable_from_zip(str(filepath))
+                    if exe_path:
+                        final_filepath = exe_path
+                        app_logger.info(f"Extracted executable: {exe_path}")
+                    else:
+                        app_logger.error("Failed to extract executable from ZIP")
+                        if completion_callback:
+                            completion_callback("", False)
+                        return
+                
                 if completion_callback:
-                    completion_callback(str(filepath), True)
+                    completion_callback(final_filepath, True)
                     
             except Exception as e:
                 app_logger.error(f"Download failed: {e}")
@@ -196,6 +211,57 @@ class DownloadManager:
             app_logger.error(f"Error getting file size: {e}")
             return 0
     
+    def _extract_executable_from_zip(self, zip_filepath: str) -> Optional[str]:
+        """Extract executable from ZIP file.
+        
+        Args:
+            zip_filepath: Path to ZIP file
+            
+        Returns:
+            Path to extracted executable or None if failed
+        """
+        try:
+            extract_dir = Path(zip_filepath).parent / "extracted"
+            extract_dir.mkdir(exist_ok=True)
+            
+            with zipfile.ZipFile(zip_filepath, 'r') as zip_ref:
+                # List all files in ZIP
+                file_list = zip_ref.namelist()
+                app_logger.info(f"ZIP contains files: {file_list}")
+                
+                # Find executable file
+                exe_file = None
+                for file_name in file_list:
+                    if file_name.endswith('.exe') and not file_name.startswith('__MACOSX'):
+                        exe_file = file_name
+                        break
+                
+                if not exe_file:
+                    app_logger.error("No executable file found in ZIP")
+                    return None
+                
+                # Extract the executable
+                zip_ref.extract(exe_file, extract_dir)
+                extracted_path = extract_dir / exe_file
+                
+                # Move to downloads directory with simpler name
+                final_path = self.download_dir / "DevServerManager.exe"
+                if final_path.exists():
+                    final_path.unlink()  # Remove old file
+                
+                extracted_path.rename(final_path)
+                
+                # Clean up
+                if extract_dir.exists():
+                    shutil.rmtree(extract_dir)
+                
+                app_logger.info(f"Executable extracted to: {final_path}")
+                return str(final_path)
+                
+        except Exception as e:
+            app_logger.error(f"Error extracting executable from ZIP: {e}")
+            return None
+
     def cancel_download(self) -> None:
         """Cancel current download."""
         if self.is_downloading:
