@@ -535,7 +535,7 @@ class TemplateWizardDialog:
                     font=('Arial', 9),
                     fg='#ecf0f1',
                     bg='#34495e',
-                    wraplength=400,
+                    wraplength=700,
                     justify=tk.LEFT
                 )
                 desc_label.pack(anchor=tk.W, padx=30, pady=(0, 10))
@@ -1067,7 +1067,7 @@ class NoUpdateDialog:
         # Create dialog window
         self.dialog = tk.Toplevel(parent)
         self.dialog.title("Check for Updates")
-        self.dialog.geometry("400x200")
+        self.dialog.geometry("450x250")
         self.dialog.configure(bg='#2c3e50')
         self.dialog.resizable(False, False)
         
@@ -1089,49 +1089,65 @@ class NoUpdateDialog:
     def setup_dialog_ui(self) -> None:
         """Setup dialog UI components."""
         # Main frame
-        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=30, pady=30)
+        main_frame = tk.Frame(self.dialog, bg='#2c3e50', padx=40, pady=40)
         main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Icon frame
+        icon_frame = tk.Frame(main_frame, bg='#2c3e50')
+        icon_frame.pack(fill=tk.X, pady=(0, 15))
         
         # Icon
         icon_label = tk.Label(
-            main_frame,
+            icon_frame,
             text="✅",
-            font=("Arial", 32),
+            font=("Arial", 36),
             bg='#2c3e50',
             fg='#2ecc71'
         )
-        icon_label.pack(pady=(0, 20))
+        icon_label.pack()
+        
+        # Title frame
+        title_frame = tk.Frame(main_frame, bg='#2c3e50')
+        title_frame.pack(fill=tk.X, pady=(0, 15))
         
         # Title
         title_label = tk.Label(
-            main_frame,
+            title_frame,
             text="You're up to date!",
-            font=("Arial", 16, "bold"),
+            font=("Arial", 18, "bold"),
             bg='#2c3e50',
             fg='#ecf0f1'
         )
-        title_label.pack(pady=(0, 10))
+        title_label.pack()
+        
+        # Version frame
+        version_frame = tk.Frame(main_frame, bg='#2c3e50')
+        version_frame.pack(fill=tk.X, pady=(0, 25))
         
         # Version info
         version_label = tk.Label(
-            main_frame,
+            version_frame,
             text=f"Current version: {self.current_version}",
-            font=("Arial", 12),
+            font=("Arial", 13),
             bg='#2c3e50',
             fg='#ecf0f1'
         )
-        version_label.pack(pady=(0, 20))
+        version_label.pack()
+        
+        # Button frame
+        button_frame = tk.Frame(main_frame, bg='#2c3e50')
+        button_frame.pack(fill=tk.X)
         
         # OK button
         ok_button = tk.Button(
-            main_frame,
+            button_frame,
             text="OK",
-            font=("Arial", 10, "bold"),
+            font=("Arial", 11, "bold"),
             bg='#3498db',
             fg='white',
             relief=tk.FLAT,
-            padx=30,
-            pady=10,
+            padx=40,
+            pady=12,
             command=self.dialog.destroy,
             cursor='hand2'
         )
