@@ -26,6 +26,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Planning
 - Future enhancements and features
 
+## [2.1.1] - 2025-09-11 - **Security & Build Update**
+
+### Added
+- 🛡️ **Antivirus False Positive Solutions**: Comprehensive guide for handling antivirus detection issues
+- 📋 **Security Documentation**: Clear explanation of false positive causes and solutions
+- 🔧 **Enhanced Build Process**: Optimized PyInstaller settings to reduce false positives
+  - Added `--noupx` flag to disable compression that triggers detection
+  - Added `--clean` and `--strip` flags for cleaner builds
+  - Excluded unnecessary modules that increase suspicion
+  - Enhanced hidden imports for better compatibility
+
+### Changed
+- 📖 **README Security Section**: Added antivirus notice and safe installation instructions
+- 🏗️ **Build Configuration**: Updated build script with antivirus-optimized settings
+- 🛡️ **User Communication**: Clear guidance on false positive handling
+
+### Fixed
+- 🚨 **Antivirus Detection**: Implemented multiple strategies to reduce false positive rates
+- 📦 **Build Optimization**: Reduced executable size and suspicious patterns
+- 🔒 **Security Transparency**: Enhanced documentation about application safety
+
+### Security
+- ✅ **False Positive Mitigation**: Multiple strategies to reduce antivirus false positives
+- 📝 **Transparency**: Clear documentation about why detection occurs
+- 🛡️ **Safe Installation**: Provided source code installation as primary safe method
+
 ## [2.1.0] - 2025-09-11 - **Current Release**
 
 ### Added
