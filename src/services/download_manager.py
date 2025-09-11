@@ -60,6 +60,7 @@ class DownloadManager:
             return
         
         def download_thread():
+            nonlocal filename  # Allow access to filename in nested function
             try:
                 self.is_downloading = True
                 self.cancel_download = False
