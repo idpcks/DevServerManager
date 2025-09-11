@@ -1,0 +1,38 @@
+# DevServer Manager Application Requirements
+
+# Core dependencies for enhanced functionality
+psutil>=7.0.0          # Process management and system monitoring
+watchdog>=6.0.0        # File system monitoring for auto-reload
+jsonschema>=4.25.0     # JSON schema validation for configs
+requests>=2.32.5       # HTTP requests for update checking
+
+# Optional enhanced features
+coloredlogs>=15.0.1    # Enhanced logging with colors (optional)
+pillow>=11.3.0         # Advanced image handling (optional)
+pystray>=0.19.5        # System tray icon support
+
+# Built-in libraries used (no installation required):
+# - tkinter (GUI framework)
+# - subprocess (command execution)
+# - threading (non-blocking operations)
+# - queue (thread-safe communication)
+# - json (configuration storage)
+# - os (file system operations)
+# - sys (system operations)
+# - datetime (timestamps)
+# - pathlib (modern path handling)
+# - dataclasses (data models)
+# - abc (abstract base classes)
+# - enum (enumerations)
+# - typing (type hints)
+
+# Development dependencies (uncomment for development)
+# pytest>=6.0
+# pytest-cov>=2.0
+# black>=21.0
+# flake8>=3.8
+# mypy>=0.800
+
+# Build dependencies (uncomment for building executables)
+# pyinstaller>=4.0
+# cx-Freeze>=6.0

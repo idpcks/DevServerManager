@@ -33,7 +33,7 @@ except Exception:
 
 setup(
     name="DevServerManager",
-    version="2.1.0",
+    version="v2.1.0",
     author="idpcks",
     author_email="idpcks.container103@slmail.me",
     description="A GUI application for managing development servers",

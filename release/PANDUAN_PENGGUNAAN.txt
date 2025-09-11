@@ -1,0 +1,27 @@
+# DevServer Manager vv2.1.0 - Panduan Penggunaan
+
+## 🔒 Keamanan Terjamin
+- **VirusTotal Status**: ✅ CLEAN - Tidak ada ancaman terdeteksi
+- **Laporan Scan**: https://www.virustotal.com/gui/file/a76f480d558e4a6cbf5a22c9d21bf8b95a2597f19ee5e4743c44cdb0b49d5b2c?nocache=1
+- **Rating Keamanan**: ✅ EXCELLENT
+- **Aplikasi 100% AMAN** untuk digunakan
+
+## Cara Menjalankan
+1. Double-click file `DevServerManager.exe`
+2. Aplikasi akan terbuka dengan splash screen
+3. Gunakan interface untuk mengelola server development Anda
+
+## File Konfigurasi
+- `server_templates.json`: Template server yang tersedia
+- `server_config_example.json`: Contoh konfigurasi server
+
+## Troubleshooting
+- Jika aplikasi tidak berjalan, pastikan Windows Defender tidak memblokir file
+- Untuk masalah lain, silakan buat issue di repository GitHub
+
+## Sistem Requirements
+- Windows 10/11
+- .NET Framework (biasanya sudah terinstall)
+
+## Versi v2.1.0
+Lihat CHANGELOG.md untuk detail perubahan versi ini.
