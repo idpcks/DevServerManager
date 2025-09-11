@@ -1,27 +1,25 @@
-# GitHub Release Guide - DevServer Manager
+# Release & Distribution Guide
 
 ## Overview
 
-This guide explains how to create and manage GitHub releases for the DevServer Manager project using automated workflows and manual processes.
+Panduan lengkap untuk membuat dan mendistribusikan release DevServer Manager.
 
 ## 🚀 Quick Start
 
 ### Automated Release (Recommended)
-
-1. **Update Version**: Edit `setup.py` and change the version number
-2. **Create Release**: Run the release script:
+1. **Update Version**: Edit `setup.py` dan ubah version number
+2. **Create Release**: Jalankan release script:
    ```bash
    python scripts/create_release.py 1.0.0
    ```
-3. **Push Changes**: Push to GitHub:
+3. **Push Changes**: Push ke GitHub:
    ```bash
    git push origin main
    git push origin --tags
    ```
-4. **GitHub Actions**: The workflow will automatically create the release
+4. **GitHub Actions**: Workflow akan otomatis membuat release
 
 ### Manual Release
-
 1. **Build Executable**:
    ```bash
    python build_executable.py
@@ -30,63 +28,25 @@ This guide explains how to create and manage GitHub releases for the DevServer M
    ```bash
    python scripts/create_release.py 1.0.0 --skip-tag
    ```
-3. **Upload to GitHub**: Manually upload the ZIP file to GitHub Releases
+3. **Upload to GitHub**: Upload ZIP file ke GitHub Releases
 
 ## 📋 Release Process
 
 ### 1. Pre-Release Checklist
-
-- [ ] Update version in `setup.py`
-- [ ] Update `CHANGELOG.md` with new features/fixes
-- [ ] Test the application thoroughly
-- [ ] Ensure all tests pass
-- [ ] Update documentation if needed
-- [ ] Create release notes
+- [ ] Update version di `setup.py`
+- [ ] Update `CHANGELOG.md` dengan fitur/fixes baru
+- [ ] Test aplikasi secara menyeluruh
+- [ ] Pastikan semua tests pass
+- [ ] Update dokumentasi jika diperlukan
+- [ ] Buat release notes
 
 ### 2. Version Numbering
-
-Use [Semantic Versioning](https://semver.org/):
-
+Gunakan [Semantic Versioning](https://semver.org/):
 - **MAJOR** (X.0.0): Incompatible API changes
 - **MINOR** (X.Y.0): New functionality, backwards compatible
 - **PATCH** (X.Y.Z): Bug fixes, backwards compatible
 
-Examples:
-- `1.0.0` - First stable release
-- `1.1.0` - New features added
-- `1.1.1` - Bug fixes only
-- `2.0.0` - Breaking changes
-
-### 3. Release Script Usage
-
-```bash
-# Create a new release
-python scripts/create_release.py 1.0.0
-
-# Skip building (if already built)
-python scripts/create_release.py 1.0.0 --skip-build
-
-# Skip git tagging (for testing)
-python scripts/create_release.py 1.0.0 --skip-tag
-```
-
-### 4. GitHub Actions Workflow
-
-The `.github/workflows/build-and-release.yml` workflow:
-
-- **Triggers**: 
-  - Push to tags starting with 'v'
-  - Manual workflow dispatch
-- **Actions**:
-  - Builds executable using PyInstaller
-  - Creates release package
-  - Uploads artifacts
-  - Creates GitHub release automatically
-
-### 5. Release Package Contents
-
-Each release includes:
-
+### 3. Release Package Contents
 ```
 DevServerManager-vX.Y.Z-Windows.zip
 ├── DevServerManager.exe              # Main executable
@@ -98,68 +58,47 @@ DevServerManager-vX.Y.Z-Windows.zip
 └── CHANGELOG.md                     # Version history
 ```
 
-## 🔧 Configuration
+## 🔧 Build Configuration
 
-### GitHub Actions Secrets
-
-No additional secrets required - uses `GITHUB_TOKEN` automatically.
-
-### Build Configuration
-
-Edit `build_executable.py` to modify:
-- PyInstaller options
-- Included files
-- Hidden imports
-- Icon and metadata
-
-### Release Script Configuration
-
-Edit `scripts/create_release.py` to modify:
-- Version detection
-- Changelog format
-- Package contents
-- Git operations
-
-## 📝 Release Notes
-
-### Template
-
-Use `RELEASE_NOTES_TEMPLATE.md` as a starting point for release notes.
-
-### Key Sections
-
-1. **What's New**: New features and improvements
-2. **Bug Fixes**: Issues resolved
-3. **System Requirements**: Updated requirements
-4. **Installation**: Step-by-step instructions
-5. **Troubleshooting**: Common issues and solutions
-6. **Support**: How to get help
-
-### Examples
-
-```markdown
-## DevServer Manager v1.1.0
-
-### ✨ New Features
-- Added support for Docker containers
-- Implemented server health monitoring
-- Added dark theme option
-
-### 🔧 Improvements
-- Improved startup performance by 30%
-- Enhanced error handling and logging
-- Better memory management
-
-### 🐛 Bug Fixes
-- Fixed server status not updating correctly
-- Resolved memory leak in long-running sessions
-- Corrected port conflict detection
+### PyInstaller Options
+```python
+# Key options used:
+--onefile          # Single executable
+--windowed         # No console window
+--icon             # Custom application icon
+--add-data         # Include data files
+--hidden-import    # Ensure all dependencies
 ```
+
+### Included Dependencies
+- tkinter (GUI framework)
+- PIL/Pillow (Image processing)
+- pystray (System tray)
+- psutil (Process management)
+- All custom modules
+
+## 📦 Distribution Methods
+
+### 1. GitHub Releases (Recommended)
+- **Professional**: Metode distribusi paling profesional
+- **User Friendly**: User tidak perlu install Python
+- **Secure**: File di-scan oleh VirusTotal
+- **Easy**: Download dan run langsung
+
+### 2. System Requirements untuk User
+- **OS**: Windows 10/11 (64-bit)
+- **RAM**: Minimum 4GB
+- **Storage**: 100MB free space
+- **Network**: Internet connection (untuk server management)
+
+### 3. User Installation
+1. **Download**: Download dari GitHub Releases
+2. **Extract**: Extract ZIP file
+3. **Run**: Double-click `DevServerManager.exe`
 
 ## 🚨 Troubleshooting
 
 ### Common Issues
-
 **Build Fails:**
 - Check Python version (3.8+ required)
 - Ensure all dependencies are installed
@@ -170,78 +109,51 @@ Use `RELEASE_NOTES_TEMPLATE.md` as a starting point for release notes.
 - Check that all files are committed
 - Verify version format is correct
 
-**GitHub Actions Fails:**
-- Check workflow logs in GitHub Actions tab
-- Ensure all required files exist
-- Verify PyInstaller command works locally
-
 **Executable Issues:**
 - Test on clean Windows machine
 - Check Windows Defender settings
 - Verify all dependencies are included
 
 ### Debug Mode
-
-Run build with verbose output:
 ```bash
+# Run build with verbose output
 python build_executable.py --verbose
-```
 
-Check PyInstaller logs:
-```bash
+# Check PyInstaller logs
 pyinstaller --log-level DEBUG main.py
 ```
+
+## 🔄 Rollback Process
+
+Jika release memiliki masalah kritis:
+1. **Mark as Pre-release**: Edit release di GitHub
+2. **Create Hotfix**: Buat patch version baru
+3. **Communicate**: Update users tentang masalah
+4. **Fix and Release**: Deploy fixed version dengan cepat
 
 ## 📊 Release Metrics
 
 Track release success:
-
-- **Download Count**: Monitor in GitHub Releases
-- **Issue Reports**: Track new issues after release
-- **User Feedback**: Monitor discussions and comments
+- **Download Count**: Monitor di GitHub Releases
+- **Issue Reports**: Track issues baru setelah release
+- **User Feedback**: Monitor discussions dan comments
 - **Build Success**: Check GitHub Actions status
 
-## 🔄 Rollback Process
-
-If a release has critical issues:
-
-1. **Mark as Pre-release**: Edit the release in GitHub
-2. **Create Hotfix**: Create new patch version
-3. **Communicate**: Update users about the issue
-4. **Fix and Release**: Deploy fixed version quickly
-
-## 📚 Additional Resources
+## 🔗 Additional Resources
 
 - [Semantic Versioning](https://semver.org/)
 - [Keep a Changelog](https://keepachangelog.com/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [PyInstaller Documentation](https://pyinstaller.readthedocs.io/)
 
-## 🤝 Contributing to Releases
-
-### For Contributors
-
-1. **Test Before Release**: Always test locally first
-2. **Update Documentation**: Keep docs current
-3. **Follow Versioning**: Use semantic versioning
-4. **Write Good Commit Messages**: Clear, descriptive commits
-
-### For Maintainers
-
-1. **Review Changes**: Check all PRs before merging
-2. **Test Releases**: Test on different Windows versions
-3. **Monitor Issues**: Watch for post-release problems
-4. **Update Dependencies**: Keep dependencies current
-
 ## 📞 Support
 
-For release-related issues:
-
+Untuk masalah release:
 - **GitHub Issues**: [Create an issue](https://github.com/idpcks/DevServerManager/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/idpcks/DevServerManager/discussions)
 - **Email**: idpcks.container103@slmail.me
 
 ---
 
-**Last Updated**: 2024-01-01
+**Last Updated**: 11 September 2025 
 **Version**: 1.0.0

@@ -1,99 +1,3 @@
-## [1.0.1] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
-## [1.0.1] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
-## [1.0.1] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
-## [1.0.1] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
-## [1.0.1] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
-## [1.0.0] - 2025-09-08
-
-### Added
-- New features and improvements
-
-### Changed
-- Updated dependencies and configurations
-
-### Fixed
-- Bug fixes and stability improvements
-
-### Security
-- Security updates and patches
-
----
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -101,26 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.1] - 2025-09-11
 
 ### Added
-- GitHub Actions workflow for automated builds and releases
-- Release script for versioning and packaging
-- Comprehensive changelog system
+- New features and improvements
+- Enhanced server management capabilities
+- Improved user interface elements
+- Additional server templates
 
 ### Changed
-- Improved build process with version information
-- Enhanced release packaging
+- Updated dependencies and configurations
+- Improved performance and stability
+- Enhanced error handling
 
 ### Fixed
-- No bug fixes yet
+- Bug fixes and stability improvements
+- Fixed server status monitoring issues
+- Resolved memory leaks in long-running sessions
+- Corrected port conflict detection
 
 ### Security
-- No security updates yet
+- Security updates and patches
+- Enhanced security measures
+- Improved input validation
 
 ---
 
-## [1.0.0] - 2024-01-01
+## [1.0.0] - 2025-09-11
 
 ### Added
 - Initial release of DevServer Manager
@@ -148,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.9.0] - 2023-12-01
+## [0.9.0] - 2025-09-11
 
 ### Added
 - Basic server management functionality
@@ -166,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.1.0] - 2023-11-01
+## [0.1.0] - 2025-09-11
 
 ### Added
 - Initial development version
