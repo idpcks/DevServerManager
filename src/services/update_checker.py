@@ -77,6 +77,8 @@ class UpdateCheckerService:
                             version = line.split('=')[1].strip().strip('"\'')
                             # Remove trailing comma and quotes
                             version = version.rstrip(',').strip().strip('"\'')
+                            # Remove 'v' prefix if present
+                            version = version.lstrip('v')
                             if version and version != 'None':
                                 return version
             
@@ -239,16 +241,23 @@ class UpdateCheckerService:
             published_at = latest_release['published_at']
             is_prerelease = latest_release.get('prerelease', False)
             
-            # Find download URL for Windows executable
+            # Find download URL - prioritize ZIP files with Windows in name
             for asset in latest_release.get('assets', []):
-                if asset['name'].endswith('.exe') and 'Windows' in asset['name']:
+                if asset['name'].endswith('.zip') and 'Windows' in asset['name']:
                     download_url = asset['browser_download_url']
                     break
             
             if not download_url:
-                # Fallback to zip file
+                # Fallback to any ZIP file
                 for asset in latest_release.get('assets', []):
                     if asset['name'].endswith('.zip'):
+                        download_url = asset['browser_download_url']
+                        break
+            
+            if not download_url:
+                # Final fallback to exe files
+                for asset in latest_release.get('assets', []):
+                    if asset['name'].endswith('.exe'):
                         download_url = asset['browser_download_url']
                         break
             

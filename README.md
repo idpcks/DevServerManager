@@ -1,8 +1,8 @@
-# DevServer Manager
+# DevServer Manager v2
 
-🚀 **Modern GUI Application for Managing Development Servers**
+🚀 **Modern GUI Application for Managing Development Servers** - **Version 2.0 Complete Rewrite**
 
-A comprehensive solution for managing multiple development servers with an intuitive interface, featuring backup/import functionality, live updates, and support for various frameworks.
+A comprehensive solution for managing multiple development servers with an intuitive interface, featuring backup/import functionality, live updates, and support for various frameworks. **This is a complete rewrite from version 1.x with enhanced features and modern architecture.**
 
 ## ✨ Features
 
@@ -15,6 +15,8 @@ A comprehensive solution for managing multiple development servers with an intui
 - **📊 Real-time Monitoring**: Server status and process management
 
 ## 🚀 Quick Start
+
+> **Note**: This is DevServer Manager **Version 2** - A complete rewrite with enhanced features. If you're upgrading from version 1.x, please note that this version has a completely new architecture and improved functionality.
 
 ### Installation
 
@@ -32,7 +34,7 @@ python main.py
 
 ### Requirements
 
-- Python 3.8+
+- Python 3.8+ (Version 2.0 minimum requirement)
 - Windows 10/11 (recommended)
 - 256MB RAM minimum
 - 100MB storage space

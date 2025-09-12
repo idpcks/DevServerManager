@@ -36,7 +36,7 @@ setup(
     version="2.1.1",
     author="idpcks",
     author_email="idpcks.container103@slmail.me",
-    description="A GUI application for managing development servers",
+    description="DevServer Manager v2 - A modern GUI application for managing development servers",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/idpcks/DevServerManager",
