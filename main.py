@@ -18,6 +18,7 @@ sys.path.insert(0, str(src_path))
 from src.gui.main_window import MainWindow
 from src.services.config_manager import ConfigManager
 from src.services.server_manager import ServerManagerService
+from src.services.env_manager import env_manager
 from utils.logger import app_logger
 from utils.file_utils import FileUtils
 from src.gui.splashscreen import show_splash
@@ -28,16 +29,19 @@ class DevServerManagerApp:
     
     def __init__(self):
         """Initialize the application."""
+        # Load environment variables first
+        env_manager.load_env()
+        
         self.root = None
         self.main_window = None
         self.config_manager = None
         self.server_manager = None
         
-        # Application directories
+        # Application directories from environment variables
         self.app_dir = Path(__file__).parent
-        self.config_dir = self.app_dir / "config"
-        self.logs_dir = self.app_dir / "logs"
-        self.assets_dir = self.app_dir / "assets"
+        self.config_dir = self.app_dir / env_manager.get("CONFIG_DIR", "config")
+        self.logs_dir = self.app_dir / env_manager.get("LOGS_DIR", "logs")
+        self.assets_dir = self.app_dir / env_manager.get("ASSETS_DIR", "assets")
         
         # Ensure directories exist
         self._ensure_directories()

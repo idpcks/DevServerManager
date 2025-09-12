@@ -73,6 +73,27 @@ python main.py
 
 ## 🔧 Configuration
 
+### Environment Variables (.env)
+
+The application now supports environment variable configuration through a `.env` file. Copy `.env.example` to `.env` and customize your settings:
+
+```bash
+# Copy environment template
+cp .env.example .env
+```
+
+**Key Configuration Options:**
+- `APP_NAME`: Application name
+- `APP_VERSION`: Application version
+- `CONFIG_DIR`: Configuration directory (default: config)
+- `LOGS_DIR`: Logs directory (default: logs)
+- `DEFAULT_THEME`: Default theme (system, dark, light)
+- `LOG_LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR)
+- `DEFAULT_SERVER_PORT`: Default server port
+- `DEFAULT_SERVER_HOST`: Default server host
+
+### Server Configuration
+
 Server configurations are stored in `config/server_config.json`. The application supports:
 
 - **Templates**: Pre-configured for popular frameworks
@@ -88,6 +109,8 @@ DevServerManager/
 ├── requirements.txt     # Python dependencies
 ├── setup.py            # Package configuration
 ├── pyproject.toml      # Project metadata
+├── .env.example        # Environment variables template
+├── .env                # Environment variables (create from .env.example)
 ├── src/                # Core source code
 │   ├── gui/           # User interface components
 │   ├── services/      # Business logic services

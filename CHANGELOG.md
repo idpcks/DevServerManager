@@ -1,18 +1,45 @@
-## [v2.1.1] - 2025-09-11 - **Current Latest Release**
+## [v2.1.2] - 2025-01-27 - **Current Latest Release**
 
 > **DevServer Manager Version 2.x Series** - Complete application rewrite with modern architecture and enhanced features. This version series represents a major evolution from previous versions.
 
 ### Added
-- New features and improvements
+- 🔧 **Environment Variables Support**: Complete integration of python-dotenv for configuration management
+  - New EnvManager service for centralized environment variable handling
+  - .env file support for easy configuration management
+  - Environment-based configuration for all application settings
+  - .env.example template for easy setup
+- 📁 **Enhanced Configuration Management**: Improved configuration system with environment variables
+  - Dynamic configuration loading from environment variables
+  - Theme colors configurable via environment variables
+  - Logging configuration through environment variables
+  - Path configuration through environment variables
+- 🛠️ **Development Improvements**: Better development experience and maintainability
+  - Centralized configuration management
+  - No more hardcoded values in the codebase
+  - Easy environment-specific configuration
+  - Improved code organization and maintainability
 
 ### Changed
-- Updated dependencies and configurations
+- 🔄 **Configuration System**: Migrated from hardcoded values to environment variables
+  - All configuration now loads from .env file
+  - Backward compatibility maintained with fallback values
+  - Improved configuration flexibility and customization
+- 📦 **Dependencies**: Added python-dotenv>=1.0.0 for environment variable management
+- 🏗️ **Build Process**: Enhanced build system with environment variable support
+  - Updated build scripts to include .env.example in releases
+  - Improved packaging for better distribution
 
 ### Fixed
-- Bug fixes and stability improvements
+- 🔧 **Configuration Management**: Resolved hardcoded configuration issues
+  - Eliminated hardcoded paths and settings
+  - Improved configuration consistency across environments
+  - Better error handling for missing configuration values
 
 ### Security
-- Security updates and patches
+- 🔒 **Environment Security**: Enhanced security through environment variable management
+  - Sensitive configuration can be stored in environment variables
+  - .env files properly excluded from version control
+  - Improved security practices for configuration management
 
 ---
 

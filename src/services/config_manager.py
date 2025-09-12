@@ -7,17 +7,25 @@ import json
 import os
 from typing import Dict, Any, Optional, List
 from ..models.server_config import ServerConfig
+from .env_manager import env_manager
 
 
 class ConfigManager:
     """Service class for managing application configuration."""
     
-    def __init__(self, config_dir: str = "config"):
+    def __init__(self, config_dir: str = None):
         """Initialize configuration manager.
         
         Args:
             config_dir: Directory containing configuration files
         """
+        # Load environment variables
+        env_manager.load_env()
+        
+        # Use environment variable for config_dir if not provided
+        if config_dir is None:
+            config_dir = env_manager.get("CONFIG_DIR", "config")
+        
         self.config_dir = config_dir
         self.server_config_file = os.path.join(config_dir, "server_config.json")
         self.theme_config_file = os.path.join(config_dir, "theme_config.json")
@@ -303,33 +311,40 @@ class ConfigManager:
         Returns:
             Dictionary with default theme configuration
         """
-        default_theme = {
-            "current_theme": "system",
+        # Get theme colors from environment variables
+        dark_bg = env_manager.get("THEME_DARK_BG", "#2c3e50")
+        dark_fg = env_manager.get("THEME_DARK_FG", "#ecf0f1")
+        light_bg = env_manager.get("THEME_LIGHT_BG", "#ffffff")
+        light_fg = env_manager.get("THEME_LIGHT_FG", "#2c3e50")
+        default_theme = env_manager.get("DEFAULT_THEME", "system")
+        
+        default_theme_config = {
+            "current_theme": default_theme,
             "themes": {
                 "dark": {
-                    "bg": "#2c3e50",
-                    "fg": "#ecf0f1",
+                    "bg": dark_bg,
+                    "fg": dark_fg,
                     "select_bg": "#34495e",
-                    "select_fg": "#ecf0f1",
+                    "select_fg": dark_fg,
                     "button_bg": "#3498db",
                     "button_fg": "white",
                     "entry_bg": "#34495e",
-                    "entry_fg": "#ecf0f1"
+                    "entry_fg": dark_fg
                 },
                 "light": {
-                    "bg": "#ffffff",
-                    "fg": "#2c3e50",
+                    "bg": light_bg,
+                    "fg": light_fg,
                     "select_bg": "#ecf0f1",
-                    "select_fg": "#2c3e50",
+                    "select_fg": light_fg,
                     "button_bg": "#3498db",
                     "button_fg": "white",
-                    "entry_bg": "#ffffff",
-                    "entry_fg": "#2c3e50"
+                    "entry_bg": light_bg,
+                    "entry_fg": light_fg
                 }
             }
         }
         
         # Save default configuration
-        self.save_theme_config(default_theme)
+        self.save_theme_config(default_theme_config)
         
-        return default_theme
+        return default_theme_config

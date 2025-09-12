@@ -5,6 +5,7 @@ psutil>=7.0.0          # Process management and system monitoring
 watchdog>=6.0.0        # File system monitoring for auto-reload
 jsonschema>=4.25.0     # JSON schema validation for configs
 requests>=2.32.5       # HTTP requests for update checking
+python-dotenv>=1.0.0   # Environment variable management
 
 # Optional enhanced features
 coloredlogs>=15.0.1    # Enhanced logging with colors (optional)

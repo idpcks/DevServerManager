@@ -7,18 +7,35 @@ import logging
 import os
 from datetime import datetime
 from typing import Optional
+from pathlib import Path
+
+# Add src directory to Python path for env_manager import
+src_path = Path(__file__).parent.parent / "src"
+import sys
+sys.path.insert(0, str(src_path))
+
+from src.services.env_manager import env_manager
 
 
 class AppLogger:
     """Application logger with file and console output."""
     
-    def __init__(self, name: str = "DevServerManager", log_dir: str = "logs"):
+    def __init__(self, name: str = None, log_dir: str = None):
         """Initialize application logger.
         
         Args:
             name: Logger name
             log_dir: Directory for log files
         """
+        # Load environment variables
+        env_manager.load_env()
+        
+        # Use environment variables for default values
+        if name is None:
+            name = env_manager.get("APP_NAME", "DevServerManager")
+        if log_dir is None:
+            log_dir = env_manager.get("LOGS_DIR", "logs")
+        
         self.name = name
         self.log_dir = log_dir
         self.logger = logging.getLogger(name)
@@ -34,12 +51,23 @@ class AppLogger:
         # Clear existing handlers
         self.logger.handlers.clear()
         
-        # Set logger level
-        self.logger.setLevel(logging.DEBUG)
+        # Get log level from environment
+        log_level = env_manager.get("LOG_LEVEL", "INFO").upper()
+        level_map = {
+            "DEBUG": logging.DEBUG,
+            "INFO": logging.INFO,
+            "WARNING": logging.WARNING,
+            "ERROR": logging.ERROR,
+            "CRITICAL": logging.CRITICAL
+        }
+        self.logger.setLevel(level_map.get(log_level, logging.INFO))
+        
+        # Get log format from environment
+        log_format = env_manager.get("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         
         # Create formatters
         file_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            log_format,
             datefmt='%Y-%m-%d %H:%M:%S'
         )
         
