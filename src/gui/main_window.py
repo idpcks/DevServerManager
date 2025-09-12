@@ -27,6 +27,7 @@ except ImportError as e:
 from ..services.server_manager import ServerManagerService
 from ..services.config_manager import ConfigManager
 from ..services.update_checker import UpdateCheckerService
+from ..services.env_manager import env_manager
 from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog, LiveUpdateDialog, BackupExportDialog, ImportRestoreDialog
 from utils.theme_manager import theme_manager
 from utils.logger import app_logger
@@ -42,6 +43,9 @@ class MainWindow:
         Args:
             root: Root tkinter window
         """
+        # Load environment variables
+        env_manager.load_env()
+        
         self.root = root
         self.server_manager = ServerManagerService()
         self.config_manager = ConfigManager()
@@ -78,7 +82,7 @@ class MainWindow:
         
         self._start_log_processor()
     
-    def apply_theme(self, theme_name: str = None):
+    def apply_theme(self, theme_name: Optional[str] = None):
         """Apply theme to the main window.
         
         Args:
@@ -116,9 +120,16 @@ class MainWindow:
     
     def _setup_window(self) -> None:
         """Setup main window properties."""
-        self.root.title("DevServer Manager")
-        self.root.geometry("1200x800")
-        self.root.minsize(800, 600)
+        # Get window configuration from environment variables
+        window_title = env_manager.get("WINDOW_TITLE", "DevServer Manager")
+        window_width = env_manager.get_int("WINDOW_WIDTH", 1200)
+        window_height = env_manager.get_int("WINDOW_HEIGHT", 800)
+        min_width = env_manager.get_int("WINDOW_MIN_WIDTH", 800)
+        min_height = env_manager.get_int("WINDOW_MIN_HEIGHT", 600)
+        
+        self.root.title(window_title)
+        self.root.geometry(f"{window_width}x{window_height}")
+        self.root.minsize(min_width, min_height)
         self.root.configure(bg='#2c3e50')
         
         # Set application icon using centralized icon manager
@@ -798,7 +809,7 @@ class MainWindow:
             running_servers = []
             servers = self.server_manager.get_all_servers()
             for server_name, server_config in servers.items():
-                if self.server_manager.is_server_running(server_name):
+                if self.server_manager.servers[server_name].is_running():
                     running_servers.append(server_name)
             
             app_logger.info(f"Found {len(running_servers)} running servers: {running_servers}")

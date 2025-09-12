@@ -159,7 +159,10 @@ LOG_BACKUP_COUNT=5
 
 # Update Configuration
 AUTO_UPDATE_CHECK=true
-UPDATE_CHECK_INTERVAL=3600
+UPDATE_CHECK_INTERVAL_HOURS=24
+UPDATE_CACHE_DURATION_HOURS=1
+GITHUB_OWNER=idpcks
+GITHUB_REPO=DevServerManager
 GITHUB_REPO_URL=https://github.com/idpcks/DevServerManager
 
 # Security Configuration
@@ -171,6 +174,17 @@ SESSION_TIMEOUT=3600
 MAX_CONCURRENT_SERVERS=10
 SERVER_STARTUP_TIMEOUT=30
 AUTO_CLEANUP_INTERVAL=300
+
+# Build Configuration
+BUILD_EXCLUDE_MODULES=tkinter.test,unittest,test,doctest,pdb,pydoc
+BUILD_INCLUDE_MODULES=tkinter,tkinter.ttk,tkinter.messagebox,tkinter.filedialog,PIL.Image,PIL.ImageTk,requests,json,threading,subprocess,sys,os
+
+# Application Window Configuration
+WINDOW_WIDTH=1200
+WINDOW_HEIGHT=800
+WINDOW_MIN_WIDTH=800
+WINDOW_MIN_HEIGHT=600
+WINDOW_TITLE=DevServer Manager
 """
         
         try:

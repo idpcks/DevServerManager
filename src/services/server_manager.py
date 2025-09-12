@@ -9,6 +9,7 @@ import signal
 from typing import Dict, List, Optional, Callable
 from ..models.server_config import ServerConfig
 from .template_manager import TemplateManager
+from .env_manager import env_manager
 
 
 class ServerManagerService:
@@ -20,6 +21,9 @@ class ServerManagerService:
         Args:
             log_callback: Optional callback function for logging messages
         """
+        # Load environment variables
+        env_manager.load_env()
+        
         self.servers: Dict[str, ServerConfig] = {}
         self.log_callback = log_callback
         self._initialized = False
