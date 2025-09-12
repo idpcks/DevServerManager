@@ -42,7 +42,7 @@ class DownloadManager:
         
         app_logger.info(f"DownloadManager initialized. Download dir: {self.download_dir}")
     
-    def download_file(self, url: str, filename: str = None, 
+    def download_file(self, url: str, filename: Optional[str] = None, 
                      progress_callback: Optional[Callable[[DownloadProgress], None]] = None,
                      completion_callback: Optional[Callable[[str, bool], None]] = None) -> None:
         """Download file with progress tracking.
@@ -161,7 +161,7 @@ class DownloadManager:
         thread = threading.Thread(target=download_thread, daemon=True)
         thread.start()
     
-    def verify_file_integrity(self, filepath: str, expected_checksum: str = None) -> bool:
+    def verify_file_integrity(self, filepath: str, expected_checksum: Optional[str] = None) -> bool:
         """Verify file integrity using checksum.
         
         Args:

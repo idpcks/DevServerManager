@@ -1,13 +1,14 @@
 import json
 import os
 import glob
+import json
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
 
 class TemplateManager:
     """Manages server templates and auto-detection of project types for DevServer Manager Application"""
     
-    def __init__(self, config_dir: str = None):
+    def __init__(self, config_dir: Optional[str] = None):
         if config_dir is None:
             config_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'config')
         
@@ -115,7 +116,7 @@ class TemplateManager:
             # Exact file
             return os.path.exists(os.path.join(project_path, pattern))
     
-    def get_suggested_config(self, project_path: str, template_id: str = None) -> Dict:
+    def get_suggested_config(self, project_path: str, template_id: Optional[str] = None) -> Dict:
         """Get suggested server configuration for a project
         
         Args:
@@ -173,7 +174,7 @@ class TemplateManager:
             'category': 'custom'
         }
     
-    def build_command(self, template_id: str, base_command: str, port: int = None, host: str = None) -> str:
+    def build_command(self, template_id: str, base_command: str, port: Optional[int] = None, host: Optional[str] = None) -> str:
         """Build complete command with port and host parameters
         
         Args:
@@ -216,7 +217,7 @@ class TemplateManager:
         
         return command.strip()
     
-    def get_environment_vars(self, template_id: str, port: int = None, host: str = None) -> Dict[str, str]:
+    def get_environment_vars(self, template_id: str, port: Optional[int] = None, host: Optional[str] = None) -> Dict[str, str]:
         """Get environment variables for a template
         
         Args:

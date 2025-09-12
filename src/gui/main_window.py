@@ -9,7 +9,14 @@ import threading
 import queue
 from datetime import datetime
 from typing import Dict, Any, Optional, Callable
+import sys
 import os
+from pathlib import Path
+
+# Add parent directories to path for imports
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root / "utils"))
+sys.path.insert(0, str(project_root))
 
 try:
     import pystray  # type: ignore
@@ -19,7 +26,7 @@ except ImportError as e:
     TRAY_AVAILABLE = False
     # Only show warning if logger is available
     try:
-        from utils.logger import app_logger
+        from logger import app_logger
         app_logger.warning(f"pystray or PIL not available: {e}. System tray functionality disabled.")
     except ImportError:
         pass  # Silent fallback if logger not available
@@ -27,11 +34,11 @@ except ImportError as e:
 from ..services.server_manager import ServerManagerService
 from ..services.config_manager import ConfigManager
 from ..services.update_checker import UpdateCheckerService
-from ..services.env_manager import env_manager
+from ..services.build_config import build_config
 from .dialogs import ServerConfigDialog, TemplateWizardDialog, UpdateDialog, NoUpdateDialog, LiveUpdateDialog, BackupExportDialog, ImportRestoreDialog
-from utils.theme_manager import theme_manager
-from utils.logger import app_logger
-from utils.icon_manager import icon_manager
+from theme_manager import theme_manager
+from logger import app_logger
+from icon_manager import icon_manager
 
 
 class MainWindow:
@@ -43,9 +50,7 @@ class MainWindow:
         Args:
             root: Root tkinter window
         """
-        # Load environment variables
-        env_manager.load_env()
-        
+
         self.root = root
         self.server_manager = ServerManagerService()
         self.config_manager = ConfigManager()
@@ -120,12 +125,12 @@ class MainWindow:
     
     def _setup_window(self) -> None:
         """Setup main window properties."""
-        # Get window configuration from environment variables
-        window_title = env_manager.get("WINDOW_TITLE", "DevServer Manager")
-        window_width = env_manager.get_int("WINDOW_WIDTH", 1200)
-        window_height = env_manager.get_int("WINDOW_HEIGHT", 800)
-        min_width = env_manager.get_int("WINDOW_MIN_WIDTH", 800)
-        min_height = env_manager.get_int("WINDOW_MIN_HEIGHT", 600)
+        # Get window configuration from build config (embedded and secure)
+        window_title = build_config.get_build_config("WINDOW_TITLE", "DevServer Manager")
+        window_width = build_config.get_build_config("WINDOW_WIDTH", 1200)
+        window_height = build_config.get_build_config("WINDOW_HEIGHT", 800)
+        min_width = build_config.get_build_config("WINDOW_MIN_WIDTH", 800)
+        min_height = build_config.get_build_config("WINDOW_MIN_HEIGHT", 600)
         
         self.root.title(window_title)
         self.root.geometry(f"{window_width}x{window_height}")

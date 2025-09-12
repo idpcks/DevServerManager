@@ -6,25 +6,22 @@ This module handles loading and saving application configurations.
 import json
 import os
 from typing import Dict, Any, Optional, List
-from ..models.server_config import ServerConfig
-from .env_manager import env_manager
+from models.server_config import ServerConfig
+from .build_config import build_config
 
 
 class ConfigManager:
     """Service class for managing application configuration."""
     
-    def __init__(self, config_dir: str = None):
+    def __init__(self, config_dir: Optional[str] = None):
         """Initialize configuration manager.
         
         Args:
             config_dir: Directory containing configuration files
         """
-        # Load environment variables
-        env_manager.load_env()
-        
-        # Use environment variable for config_dir if not provided
+        # Use build configuration for config_dir if not provided (user-configurable)
         if config_dir is None:
-            config_dir = env_manager.get("CONFIG_DIR", "config")
+            config_dir = str(build_config.get_user_config("CONFIG_DIR", "config"))
         
         self.config_dir = config_dir
         self.server_config_file = os.path.join(config_dir, "server_config.json")
@@ -106,7 +103,7 @@ class ConfigManager:
                     server_configs[name] = config
                 else:
                     # Convert dict to ServerConfig
-                    from ..models.server_config import ServerConfig
+                    from models.server_config import ServerConfig
                     server_configs[name] = ServerConfig(
                         name=config.get('name', name),
                         path=config.get('path', ''),
@@ -311,12 +308,12 @@ class ConfigManager:
         Returns:
             Dictionary with default theme configuration
         """
-        # Get theme colors from environment variables
-        dark_bg = env_manager.get("THEME_DARK_BG", "#2c3e50")
-        dark_fg = env_manager.get("THEME_DARK_FG", "#ecf0f1")
-        light_bg = env_manager.get("THEME_LIGHT_BG", "#ffffff")
-        light_fg = env_manager.get("THEME_LIGHT_FG", "#2c3e50")
-        default_theme = env_manager.get("DEFAULT_THEME", "system")
+        # Get theme colors from build configuration (embedded and secure)
+        dark_bg = build_config.get_build_config("THEME_DARK_BG", "#2c3e50")
+        dark_fg = build_config.get_build_config("THEME_DARK_FG", "#ecf0f1")
+        light_bg = build_config.get_build_config("THEME_LIGHT_BG", "#ffffff")
+        light_fg = build_config.get_build_config("THEME_LIGHT_FG", "#2c3e50")
+        default_theme = build_config.get_build_config("DEFAULT_THEME", "system")
         
         default_theme_config = {
             "current_theme": default_theme,

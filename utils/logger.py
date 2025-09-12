@@ -9,32 +9,44 @@ from datetime import datetime
 from typing import Optional
 from pathlib import Path
 
-# Add src directory to Python path for env_manager import
-src_path = Path(__file__).parent.parent / "src"
-import sys
-sys.path.insert(0, str(src_path))
-
-from src.services.env_manager import env_manager
+# Optional env_manager import to avoid circular dependencies
+try:
+    # Add src directory to Python path for env_manager import
+    src_path = Path(__file__).parent.parent / "src"
+    import sys
+    sys.path.insert(0, str(src_path))
+    from services.env_manager import env_manager
+    ENV_MANAGER_AVAILABLE = True
+except ImportError:
+    ENV_MANAGER_AVAILABLE = False
+    env_manager = None
 
 
 class AppLogger:
     """Application logger with file and console output."""
     
-    def __init__(self, name: str = None, log_dir: str = None):
+    def __init__(self, name: Optional[str] = None, log_dir: Optional[str] = None):
         """Initialize application logger.
         
         Args:
             name: Logger name
             log_dir: Directory for log files
         """
-        # Load environment variables
-        env_manager.load_env()
+        # Load environment variables if available
+        if ENV_MANAGER_AVAILABLE and env_manager:
+            env_manager.load_env()
         
         # Use environment variables for default values
         if name is None:
-            name = env_manager.get("APP_NAME", "DevServerManager")
+            if ENV_MANAGER_AVAILABLE and env_manager:
+                name = env_manager.get("APP_NAME", "DevServerManager")
+            else:
+                name = "DevServerManager"
         if log_dir is None:
-            log_dir = env_manager.get("LOGS_DIR", "logs")
+            if ENV_MANAGER_AVAILABLE and env_manager:
+                log_dir = env_manager.get("LOGS_DIR", "logs")
+            else:
+                log_dir = "logs"
         
         self.name = name
         self.log_dir = log_dir
@@ -52,7 +64,13 @@ class AppLogger:
         self.logger.handlers.clear()
         
         # Get log level from environment
-        log_level = env_manager.get("LOG_LEVEL", "INFO").upper()
+        if ENV_MANAGER_AVAILABLE and env_manager:
+            log_level = env_manager.get("LOG_LEVEL", "INFO").upper()
+            log_format = env_manager.get("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        else:
+            log_level = "INFO"
+            log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        
         level_map = {
             "DEBUG": logging.DEBUG,
             "INFO": logging.INFO,
@@ -61,9 +79,6 @@ class AppLogger:
             "CRITICAL": logging.CRITICAL
         }
         self.logger.setLevel(level_map.get(log_level, logging.INFO))
-        
-        # Get log format from environment
-        log_format = env_manager.get("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         
         # Create formatters
         file_formatter = logging.Formatter(

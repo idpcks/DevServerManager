@@ -14,7 +14,7 @@ from pathlib import Path
 import sys
 
 from utils.logger import app_logger
-from .env_manager import env_manager
+from .build_config import build_config
 
 
 class UpdateInfo:
@@ -37,17 +37,14 @@ class UpdateCheckerService:
     
     def __init__(self):
         """Initialize the update checker service."""
-        # Load environment variables
-        env_manager.load_env()
-        
-        # GitHub repository information from environment
-        self.GITHUB_OWNER = env_manager.get("GITHUB_OWNER", "idpcks")
-        self.GITHUB_REPO = env_manager.get("GITHUB_REPO", "DevServerManager")
+        # GitHub repository configuration (embedded at build time - secure)
+        self.GITHUB_OWNER = build_config.get_build_config("GITHUB_OWNER", "idpcks")
+        self.GITHUB_REPO = build_config.get_build_config("GITHUB_REPO", "DevServerManager")
         self.GITHUB_API_URL = f"https://api.github.com/repos/{self.GITHUB_OWNER}/{self.GITHUB_REPO}/releases"
         
-        # Update check settings from environment
-        self.CHECK_INTERVAL_HOURS = env_manager.get_int("UPDATE_CHECK_INTERVAL_HOURS", 24)
-        self.CACHE_DURATION_HOURS = env_manager.get_int("UPDATE_CACHE_DURATION_HOURS", 1)
+        # Update check settings (embedded at build time - secure)
+        self.CHECK_INTERVAL_HOURS = build_config.get_build_config("UPDATE_CHECK_INTERVAL_HOURS", 24)
+        self.CACHE_DURATION_HOURS = build_config.get_build_config("UPDATE_CACHE_DURATION_HOURS", 1)
         self.current_version = self._get_current_version()
         self.last_check_time = None
         self.cached_update_info = None
@@ -57,7 +54,7 @@ class UpdateCheckerService:
         self.running = False
         
         # Cache file for storing last check time
-        cache_dir = env_manager.get("CONFIG_DIR", "config")
+        cache_dir = build_config.get_user_config("CONFIG_DIR", "config")
         self.cache_file = Path(__file__).parent.parent.parent / cache_dir / "update_cache.json"
         self._load_cache()
         
@@ -211,7 +208,7 @@ class UpdateCheckerService:
             # Use cache if valid and not forcing
             if not force and self._is_cache_valid():
                 app_logger.info("Using cached update information")
-                return self.cached_update_info if self._is_newer_version(self.cached_update_info.version) else None
+                return self.cached_update_info if self.cached_update_info and self._is_newer_version(self.cached_update_info.version) else None
             
             # Make API request to GitHub
             headers = {

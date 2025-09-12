@@ -6,7 +6,7 @@ servers with an intuitive graphical user interface, system tray integration,
 and advanced features like server templates and auto-update checking.
 """
 
-__version__ = "2.1.2"
+__version__ = "2.1.3"
 __author__ = "idpcks"
 __email__ = "idpcks.container103@slmail.me"
 

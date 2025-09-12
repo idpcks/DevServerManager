@@ -8,11 +8,11 @@ from tkinter import messagebox, filedialog, ttk, scrolledtext
 import os
 import webbrowser
 from typing import Optional, Tuple, Dict, List
-from ..services.template_manager import TemplateManager
-from ..services.update_checker import UpdateInfo
-from ..services.download_manager import DownloadManager, DownloadProgress
-from ..services.update_installer import UpdateInstaller
-from ..services.config_manager import ConfigManager
+from services.template_manager import TemplateManager
+from services.update_checker import UpdateInfo
+from services.download_manager import DownloadManager, DownloadProgress
+from services.update_installer import UpdateInstaller
+from services.config_manager import ConfigManager
 
 
 class ServerConfigDialog:
@@ -1350,7 +1350,7 @@ class ImportRestoreDialog:
             self.update_preview(f"Error loading file: {str(e)}")
             self.import_btn.config(state='disabled')
     
-    def update_preview(self, error_message: str = None) -> None:
+    def update_preview(self, error_message: Optional[str] = None) -> None:
         self.preview_text.config(state='normal')
         self.preview_text.delete('1.0', tk.END)
         

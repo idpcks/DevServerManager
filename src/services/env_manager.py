@@ -87,7 +87,7 @@ class EnvManager:
         value = self.get(key, str(default)).lower()
         return value in ('true', '1', 'yes', 'on')
     
-    def get_list(self, key: str, separator: str = ',', default: list = None) -> list:
+    def get_list(self, key: str, separator: str = ',', default: Optional[list] = None) -> list:
         """Get environment variable as list.
         
         Args:
@@ -131,7 +131,7 @@ class EnvManager:
 
 # Application Settings
 APP_NAME=DevServer Manager
-APP_VERSION=2.1.2
+APP_VERSION=2.1.3
 APP_DEBUG=false
 
 # Default Server Configuration

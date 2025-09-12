@@ -7,7 +7,7 @@ import subprocess
 import os
 import signal
 from typing import Dict, List, Optional, Callable
-from ..models.server_config import ServerConfig
+from models.server_config import ServerConfig
 from .template_manager import TemplateManager
 from .env_manager import env_manager
 
@@ -328,7 +328,7 @@ class ServerManagerService:
         """
         return self.template_manager.detect_project_type(project_path)
     
-    def get_suggested_config(self, project_path: str, template_id: str = None) -> Dict:
+    def get_suggested_config(self, project_path: str, template_id: Optional[str] = None) -> Dict:
         """Get suggested server configuration for a project.
         
         Args:

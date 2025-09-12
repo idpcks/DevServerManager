@@ -11,17 +11,19 @@ import tkinter as tk
 from tkinter import messagebox
 from pathlib import Path
 
-# Add src directory to Python path
+# Add src and utils directories to Python path
 src_path = Path(__file__).parent / "src"
+utils_path = Path(__file__).parent / "utils"
 sys.path.insert(0, str(src_path))
+sys.path.insert(0, str(utils_path))
 
-from src.gui.main_window import MainWindow
-from src.services.config_manager import ConfigManager
-from src.services.server_manager import ServerManagerService
-from src.services.env_manager import env_manager
-from utils.logger import app_logger
-from utils.file_utils import FileUtils
-from src.gui.splashscreen import show_splash
+from gui.main_window import MainWindow
+from services.config_manager import ConfigManager
+from services.server_manager import ServerManagerService
+from services.env_manager import env_manager
+from logger import app_logger
+from file_utils import FileUtils
+from gui.splashscreen import show_splash
 
 
 class DevServerManagerApp:
@@ -99,7 +101,7 @@ class DevServerManagerApp:
             self.main_window = MainWindow(self.root)
             
             # Apply saved theme
-            theme_config = self.config_manager.get_theme_config()
+            theme_config = self.config_manager.get_theme_config() if self.config_manager else None
             if theme_config:
                 self.main_window.apply_theme(theme_config)
             
@@ -136,7 +138,8 @@ class DevServerManagerApp:
                     
                     # Start GUI main loop
                     app_logger.info("Starting GUI main loop")
-                    self.root.mainloop()
+                    if self.root:
+                        self.root.mainloop()
                     
                 except Exception as e:
                     app_logger.error(f"Error in main app initialization: {e}")
@@ -166,7 +169,7 @@ class DevServerManagerApp:
                         "Confirm Exit",
                         f"There are {len(running_servers)} running servers. "
                         "Do you want to stop them before exiting?",
-                        parent=self.root
+                        parent=self.root if self.root else None
                     )
                     
                     if result is None:  # Cancel
@@ -182,11 +185,13 @@ class DevServerManagerApp:
                 app_logger.info("Configuration saved")
             
             # Close application
-            self.root.quit()
+            if self.root:
+                self.root.quit()
             
         except Exception as e:
             app_logger.error(f"Error during application closing: {e}")
-            self.root.quit()
+            if self.root:
+                self.root.quit()
     
     def _cleanup(self) -> None:
         """Cleanup application resources."""
