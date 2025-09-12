@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 
 from utils.theme_manager import theme_manager
+from utils.icon_manager import icon_manager
 
 class SplashScreen:
     def __init__(self, main_app_callback):
@@ -15,13 +16,8 @@ class SplashScreen:
         self.splash = tk.Tk()
         self.splash.title("DevServer Manager")
         
-        # Set application icon
-        try:
-            icon_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'app_icon.ico')
-            if os.path.exists(icon_path):
-                self.splash.iconbitmap(icon_path)
-        except Exception:
-            pass  # Ignore icon errors in splash screen
+        # Set application icon using centralized icon manager
+        icon_manager.set_window_icon(self.splash)
         
         # Get current theme colors
         self.colors = theme_manager.get_current_colors()
@@ -82,21 +78,28 @@ class SplashScreen:
     def setup_logo(self):
         """Setup logo display"""
         try:
-            # Load and resize logo responsively
-            assets_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'logo.jpg')
-            logo_image = Image.open(assets_path)
-            # Scale logo size based on window size (15-25% of window width)
+            # Use centralized icon manager for logo
             logo_size = max(80, min(150, int(self.splash_width * 0.2)))
-            logo_image = logo_image.resize((logo_size, logo_size), Image.Resampling.LANCZOS)
-            self.logo_photo = ImageTk.PhotoImage(logo_image)
+            self.logo_photo = icon_manager.get_logo_for_splash((logo_size, logo_size))
             
-            # Create logo label
-            self.logo_label = tk.Label(
-                self.main_frame,
-                image=self.logo_photo,
-                bg=self.colors['bg']
-            )
-            self.logo_label.pack(pady=(30, 20))
+            if self.logo_photo:
+                # Create logo label with loaded image
+                self.logo_label = tk.Label(
+                    self.main_frame,
+                    image=self.logo_photo,
+                    bg=self.colors['bg']
+                )
+                self.logo_label.pack(pady=(30, 20))
+            else:
+                # Fallback text logo if image loading fails
+                self.logo_label = tk.Label(
+                    self.main_frame,
+                    text="SERVER\nMANAGER",
+                    font=('Arial', 20, 'bold'),
+                    fg=self.colors['fg'],
+                    bg=self.colors['bg']
+                )
+                self.logo_label.pack(pady=(30, 20))
             
         except Exception as e:
             # Fallback if logo.jpg not found
@@ -144,10 +147,16 @@ class SplashScreen:
         )
         self.loading_label.pack()
         
-        # Version info
+        # Version info - dynamically get version
+        try:
+            from src import __version__
+            version_text = f"v{__version__}"
+        except ImportError:
+            version_text = "v2.1.1"
+            
         self.version_label = tk.Label(
             self.main_frame,
-            text="v1.0.0",
+            text=version_text,
             font=('Arial', 8),
             fg=self.colors['fg'],
             bg=self.colors['bg']
